@@ -6,8 +6,7 @@ import {
   BookOpen, 
   Lightbulb, 
   Wrench, 
-  TrendingUp, 
-  Quote, 
+  TrendingUp,
   Laptop 
 } from "lucide-react";
 
@@ -54,7 +53,7 @@ export default function CaseStudy({ project }: CaseStudyProps) {
             <h3>Implementation</h3>
           </div>
           <p className="text-muted-foreground">{project.implementation}</p>
-          
+
           {/* Technologies Used */}
           {project.technologies && (
             <div className="flex flex-wrap gap-2 mt-4">
@@ -87,29 +86,6 @@ export default function CaseStudy({ project }: CaseStudyProps) {
             </ul>
           )}
         </div>
-
-        {/* Client Testimonial */}
-        {project.clientTestimonial && (
-          <>
-            <Separator />
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-xl font-semibold">
-                <Quote className="h-6 w-6 text-primary" />
-                <h3>Client Testimonial</h3>
-              </div>
-              <blockquote className="border-l-4 border-primary/20 pl-4 italic text-muted-foreground">
-                "{project.clientTestimonial.quote}"
-                <footer className="mt-2 not-italic">
-                  <strong>{project.clientTestimonial.author}</strong>
-                  <br />
-                  <span className="text-sm">
-                    {project.clientTestimonial.role}, {project.clientTestimonial.company}
-                  </span>
-                </footer>
-              </blockquote>
-            </div>
-          </>
-        )}
       </CardContent>
     </Card>
   );
