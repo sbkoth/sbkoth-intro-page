@@ -18,8 +18,8 @@
   }
 
   /* Only transition specific theme-related properties */
-  [data-theme="dark"],
-  [data-theme="light"] {
+  :root[class^="dark"],
+  :root[class^="light"] {
     transition: background-color var(--transition-duration) ease-in-out,
                 border-color var(--transition-duration) ease-in-out,
                 color var(--transition-duration) ease-in-out;
