@@ -48,7 +48,7 @@ export default function Process() {
                   {step.steps.map((item, i) => (
                     <li key={i} className="flex items-center gap-2">
                       <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-sm">{item}</span>
+                      <span className="text-sm text-muted-foreground">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -61,10 +61,7 @@ export default function Process() {
       <Dialog open={!!selectedStep} onOpenChange={() => setSelectedStep(null)}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl flex items-center gap-2">
-              <span className="text-primary">
-                {selectedStep && iconMap[selectedStep.icon]}
-              </span>
+            <DialogTitle className="text-2xl">
               {selectedStep?.title}
             </DialogTitle>
           </DialogHeader>
@@ -78,7 +75,7 @@ export default function Process() {
                 {selectedStep?.steps.map((item, i) => (
                   <li key={i} className="flex items-center gap-2">
                     <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                    <span className="text-sm">{item}</span>
+                    <span className="text-sm text-muted-foreground">{item}</span>
                   </li>
                 ))}
               </ul>
