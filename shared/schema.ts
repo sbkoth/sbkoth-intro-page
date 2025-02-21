@@ -5,7 +5,7 @@ import { z } from "zod";
 // Add admin users table for CMS authentication
 export const adminUsers = pgTable("admin_users", {
   id: serial("id").primaryKey(),
-  username: text("username").notNull(),
+  username: text("username").notNull().unique(),
   password: text("password").notNull(), // Will be hashed
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
