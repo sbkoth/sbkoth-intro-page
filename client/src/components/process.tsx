@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Search, Code, CheckCircle, Rocket } from "lucide-react";
 import { useState } from "react";
 import type { ProcessStep } from "../../../server/process-utils";
-import ContentDialog from "./content-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const iconMap: Record<string, React.ReactNode> = {
   Search: <Search className="h-8 w-8" />,
@@ -63,14 +63,37 @@ export default function Process() {
         </div>
       </div>
 
-      {selectedStep && (
-        <ContentDialog
-          title={selectedStep.title}
-          content={selectedStep.content}
-          isOpen={!!selectedStep}
-          onClose={() => setSelectedStep(null)}
-        />
-      )}
+      <Dialog open={!!selectedStep} onOpenChange={() => setSelectedStep(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl flex items-center gap-2">
+              <span className="text-primary">
+                {selectedStep && iconMap[selectedStep.icon]}
+              </span>
+              {selectedStep?.title}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-4 space-y-6">
+            <p className="text-lg text-muted-foreground">
+              {selectedStep?.description}
+            </p>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Key Steps:</h3>
+              <ul className="space-y-2">
+                {selectedStep?.steps.map((item, i) => (
+                  <li key={i} className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-primary" />
+                    <span className="text-muted-foreground">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="prose prose-gray dark:prose-invert max-w-none">
+              {selectedStep?.content}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
