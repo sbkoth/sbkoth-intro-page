@@ -9,7 +9,8 @@ import {
   blogPosts,
   insertProfileSchema,
   insertProjectSchema,
-  insertBlogPostSchema
+  insertBlogPostSchema,
+  type InsertProfile
 } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { storage } from "./storage";
@@ -44,7 +45,7 @@ export async function registerRoutes(app: Express) {
 
   // Protected routes
   app.patch("/api/profile", requireAuth, async (req, res) => {
-    const data = insertProfileSchema.parse(req.body);
+    const data = insertProfileSchema.parse(req.body) as InsertProfile;
     await db.update(profile).set(data).where(eq(profile.id, 1));
     res.json({ message: "Profile updated successfully" });
   });

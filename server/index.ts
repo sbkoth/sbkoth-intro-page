@@ -4,6 +4,7 @@ import passport from "./auth";
 import connectPgSimple from "connect-pg-simple";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { pool } from "./db";
 
 const app = express();
 app.use(express.json());
@@ -14,9 +15,8 @@ const PgSession = connectPgSimple(session);
 app.use(
   session({
     store: new PgSession({
-      conObject: {
-        connectionString: process.env.DATABASE_URL,
-      },
+      pool,
+      tableName: 'session'
     }),
     secret: process.env.SESSION_SECRET || "your-secret-key",
     resave: false,

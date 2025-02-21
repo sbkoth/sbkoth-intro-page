@@ -89,8 +89,12 @@ export default function Admin() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" loading={loginMutation.isPending}>
-                  Login
+                <Button 
+                  type="submit" 
+                  disabled={loginMutation.isPending}
+                  className="w-full"
+                >
+                  {loginMutation.isPending ? "Logging in..." : "Login"}
                 </Button>
               </div>
             </form>
