@@ -1,17 +1,20 @@
-import type { Project, Profile, BlogPost } from "@shared/schema";
+import type { Project, Profile, BlogPost, InsertProject } from "@shared/schema";
 
 export interface IStorage {
   getProfile(): Promise<Profile>;
   getProjects(): Promise<Project[]>;
   getBlogPosts(): Promise<BlogPost[]>;
+  createProject(project: InsertProject): Promise<Project>;
 }
 
 export class MemStorage implements IStorage {
   private profile: Profile;
   private projects: Project[];
   private blogPosts: BlogPost[];
+  private currentProjectId: number;
 
   constructor() {
+    this.currentProjectId = 4; // Start after existing sample projects
     this.profile = {
       id: 1,
       name: "John Doe",
@@ -32,7 +35,7 @@ export class MemStorage implements IStorage {
         title: "Getting Started with React",
         content: "Full blog post content here...",
         excerpt: "Learn the fundamentals of React and how to build modern web applications.",
-        publishedAt: new Date("2024-02-15").toISOString(),
+        publishedAt: new Date("2024-02-15"),
         thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee"
       },
       {
@@ -40,7 +43,7 @@ export class MemStorage implements IStorage {
         title: "The Future of Web Development",
         content: "Full blog post content here...",
         excerpt: "Exploring upcoming trends and technologies in web development.",
-        publishedAt: new Date("2024-02-10").toISOString(),
+        publishedAt: new Date("2024-02-10"),
         thumbnail: "https://images.unsplash.com/photo-1504639725590-34d0984388bd"
       }
     ];
@@ -55,7 +58,8 @@ export class MemStorage implements IStorage {
           url: "https://images.unsplash.com/photo-1484981138541-3d074aa97716"
         },
         thumbnail: "https://images.unsplash.com/photo-1484981138541-3d074aa97716",
-        order: 1
+        order: 1,
+        createdAt: new Date()
       },
       {
         id: 2,
@@ -66,7 +70,8 @@ export class MemStorage implements IStorage {
           url: "https://example.com/sample.pdf"
         },
         thumbnail: "https://images.unsplash.com/photo-1425421669292-0c3da3b8f529",
-        order: 2
+        order: 2,
+        createdAt: new Date()
       },
       {
         id: 3,
@@ -81,7 +86,8 @@ export class MemStorage implements IStorage {
           ]
         },
         thumbnail: "https://images.unsplash.com/photo-1508873535684-277a3cbcc4e8",
-        order: 3
+        order: 3,
+        createdAt: new Date()
       }
     ];
   }
@@ -98,6 +104,18 @@ export class MemStorage implements IStorage {
 
   async getProjects(): Promise<Project[]> {
     return this.projects.sort((a, b) => a.order - b.order);
+  }
+
+  async createProject(project: InsertProject): Promise<Project> {
+    const newProject: Project = {
+      ...project,
+      id: this.currentProjectId++,
+      order: this.projects.length + 1,
+      createdAt: new Date()
+    };
+
+    this.projects.push(newProject);
+    return newProject;
   }
 }
 
