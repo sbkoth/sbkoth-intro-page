@@ -10,19 +10,23 @@ export default function PdfViewer({ url }: PdfViewerProps) {
 
   useEffect(() => {
     const loadPdf = async () => {
-      const pdf = await pdfjsLib.getDocument(url).promise;
-      const page = await pdf.getPage(1);
-      const canvas = canvasRef.current!;
-      const context = canvas.getContext("2d")!;
-      const viewport = page.getViewport({ scale: 1.5 });
+      try {
+        const pdf = await pdfjsLib.getDocument(url).promise;
+        const page = await pdf.getPage(1);
+        const canvas = canvasRef.current!;
+        const context = canvas.getContext("2d")!;
+        const viewport = page.getViewport({ scale: 1.5 });
 
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
 
-      await page.render({
-        canvasContext: context,
-        viewport: viewport
-      }).promise;
+        await page.render({
+          canvasContext: context,
+          viewport: viewport
+        }).promise;
+      } catch (error) {
+        console.error("Error loading PDF:", error);
+      }
     };
 
     loadPdf();
