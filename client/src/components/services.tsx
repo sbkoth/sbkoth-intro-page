@@ -1,39 +1,25 @@
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Database, Cloud, Shield, Code, Brain, ChartBar } from "lucide-react";
+import type { Service } from "../../../server/services-utils";
+
+const iconMap: Record<string, React.ReactNode> = {
+  Database: <Database className="h-8 w-8" />,
+  Cloud: <Cloud className="h-8 w-8" />,
+  Shield: <Shield className="h-8 w-8" />,
+  Code: <Code className="h-8 w-8" />,
+  Brain: <Brain className="h-8 w-8" />,
+  ChartBar: <ChartBar className="h-8 w-8" />,
+};
 
 export default function Services() {
-  const services = [
-    {
-      icon: <Database className="h-8 w-8" />,
-      title: "Data Architecture",
-      description: "Design and implementation of scalable data solutions, from warehouses to lakes",
-    },
-    {
-      icon: <Cloud className="h-8 w-8" />,
-      title: "Cloud Migration",
-      description: "Strategic cloud adoption and migration with zero downtime",
-    },
-    {
-      icon: <Shield className="h-8 w-8" />,
-      title: "Security Architecture",
-      description: "Robust security patterns and compliance frameworks",
-    },
-    {
-      icon: <Code className="h-8 w-8" />,
-      title: "Technical Leadership",
-      description: "Guide teams in adopting best practices and modern architectures",
-    },
-    {
-      icon: <Brain className="h-8 w-8" />,
-      title: "Solution Architecture",
-      description: "End-to-end solution design focusing on scalability and maintainability",
-    },
-    {
-      icon: <ChartBar className="h-8 w-8" />,
-      title: "Performance Optimization",
-      description: "System analysis and optimization for peak performance",
-    },
-  ];
+  const { data: services } = useQuery<Service[]>({
+    queryKey: ["/api/services"],
+  });
+
+  if (!services) {
+    return null; // Add loading skeleton later if needed
+  }
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -43,7 +29,9 @@ export default function Services() {
           <Card key={index} className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <div className="flex items-center gap-4">
-                <div className="text-primary">{service.icon}</div>
+                <div className="text-primary">
+                  {iconMap[service.icon]}
+                </div>
                 <CardTitle className="text-xl">{service.title}</CardTitle>
               </div>
             </CardHeader>

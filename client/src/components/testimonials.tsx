@@ -1,27 +1,16 @@
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import type { Testimonial } from "../../../server/testimonials-utils";
 
 export default function Testimonials() {
-  const testimonials = [
-    {
-      text: "Srinivas led our cloud migration project with exceptional expertise. His strategic approach saved us 40% in infrastructure costs while improving system reliability.",
-      author: "Sarah Chen",
-      role: "CTO, TechCorp",
-      avatar: "/uploads/avatar-1.jpg",
-    },
-    {
-      text: "The data governance framework Srinivas implemented transformed how we handle data. His attention to security and compliance was outstanding.",
-      author: "Michael Rodriguez",
-      role: "Head of Data, FinanceFlow",
-      avatar: "/uploads/avatar-2.jpg",
-    },
-    {
-      text: "Working with Srinivas on our system architecture modernization was eye-opening. His technical leadership and clear communication made complex transitions smooth.",
-      author: "Emily Zhang",
-      role: "VP Engineering, CloudScale",
-      avatar: "/uploads/avatar-3.jpg",
-    },
-  ];
+  const { data: testimonials } = useQuery<Testimonial[]>({
+    queryKey: ["/api/testimonials"],
+  });
+
+  if (!testimonials) {
+    return null; // Add loading skeleton later if needed
+  }
 
   return (
     <div className="container mx-auto px-4 py-16 bg-accent/5">
@@ -40,7 +29,9 @@ export default function Testimonials() {
                 </Avatar>
                 <div>
                   <p className="font-semibold">{testimonial.author}</p>
-                  <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {testimonial.role}, {testimonial.company}
+                  </p>
                 </div>
               </div>
             </CardContent>
