@@ -9,7 +9,3 @@ steps:
   - Continuous feedback
   - Quality assurance
 ---
-
-# Implementation Phase
-
-Our implementation process focuses on delivering high-quality solutions that meet your needs.

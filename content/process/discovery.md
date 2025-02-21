@@ -9,7 +9,3 @@ steps:
   - Pain points identification
   - Opportunity assessment
 ---
-
-# Discovery Phase
-
-Our thorough discovery process ensures we fully understand your needs before proposing solutions.

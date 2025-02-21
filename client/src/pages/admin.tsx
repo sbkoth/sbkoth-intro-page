@@ -12,6 +12,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Upload, Plus, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { z } from "zod";
+
+const adminProjectSchema = insertProjectSchema.extend({
+  thumbnailFile: z.instanceof(FileList).optional(),
+});
+
+type AdminProject = z.infer<typeof adminProjectSchema>;
 
 export default function Admin() {
   const { toast } = useToast();
@@ -19,8 +26,8 @@ export default function Admin() {
   const [technologies, setTechnologies] = useState<string[]>([]);
   const [newTechnology, setNewTechnology] = useState("");
 
-  const form = useForm<InsertProject>({
-    resolver: zodResolver(insertProjectSchema),
+  const form = useForm<AdminProject>({
+    resolver: zodResolver(adminProjectSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -32,6 +39,7 @@ export default function Admin() {
       outcomes: [],
       technologies: [],
       thumbnail: "",
+      thumbnailFile: undefined, //Added default value for thumbnailFile
     },
   });
 
@@ -49,15 +57,14 @@ export default function Admin() {
     form.setValue("technologies", updatedTech);
   };
 
-  const onSubmit = async (data: InsertProject) => {
+  const onSubmit = async (data: AdminProject) => {
     try {
       setIsUploading(true);
       const formData = new FormData();
 
       // Add thumbnail if it exists
-      const thumbnailFile = form.getValues("thumbnailFile");
-      if (thumbnailFile) {
-        formData.append("thumbnail", thumbnailFile[0]);
+      if (data.thumbnailFile?.[0]) {
+        formData.append("thumbnail", data.thumbnailFile[0]);
       }
 
       // Format the data
@@ -66,6 +73,9 @@ export default function Admin() {
         slug: data.title.toLowerCase().replace(/\s+/g, '-'),
         technologies,
       };
+
+      // Remove thumbnailFile from projectData before sending
+      delete projectData.thumbnailFile;
 
       // Add project data
       formData.append("data", JSON.stringify(projectData));
@@ -236,16 +246,11 @@ export default function Admin() {
               <FormField
                 control={form.control}
                 name="thumbnailFile"
-                render={({ field: { onChange, value, ...field } }) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>Thumbnail</FormLabel>
                     <FormControl>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => onChange(e.target.files)}
-                        {...field}
-                      />
+                      <Input type="file" accept="image/*" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
