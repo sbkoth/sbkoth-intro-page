@@ -7,6 +7,7 @@ import fs from "fs";
 import fsPromises from "fs/promises";
 import express from "express";
 import { ensureBlogDir } from "./blog-utils";
+import { ensureProjectDir } from "./project-utils";
 
 const UPLOAD_DIR = path.join(process.cwd(), "uploads");
 
@@ -66,7 +67,6 @@ export async function registerRoutes(app: Express) {
 
   app.post("/api/profile/photo", async (req, res) => {
     try {
-      // Copy the photo from attached_assets to uploads
       const sourcePhotoPath = path.join(process.cwd(), "attached_assets", "sbk-profile-photo-small.jpg");
       const targetFilename = `${Date.now()}-profile-photo.jpg`;
       const targetPhotoPath = path.join(UPLOAD_DIR, targetFilename);
@@ -90,6 +90,8 @@ export async function registerRoutes(app: Express) {
 
   const httpServer = createServer(app);
   await ensureBlogDir();
+  await ensureProjectDir();
   await storage.syncBlogPosts();
+  await storage.syncProjects();
   return httpServer;
 }

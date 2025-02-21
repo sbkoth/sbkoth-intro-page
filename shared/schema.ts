@@ -18,11 +18,13 @@ export const profile = pgTable("profile", {
 
 export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
   title: text("title").notNull(),
   description: text("description").notNull(),
-  type: text("type", { enum: ["image", "pdf", "slides", "text"] }).notNull(),
-  content: jsonb("content").notNull(),
+  content: text("content").notNull(),
+  publishedAt: timestamp("published_at").notNull().defaultNow(),
   thumbnail: text("thumbnail").notNull(),
+  type: text("type", { enum: ["image", "pdf", "slides", "text"] }).notNull(),
 });
 
 export const blogPosts = pgTable("blog_posts", {

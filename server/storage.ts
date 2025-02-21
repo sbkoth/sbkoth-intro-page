@@ -3,6 +3,7 @@ import { projects, profile, blogPosts } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import { loadBlogPosts } from "./blog-utils";
+import { loadProjects } from "./project-utils";
 
 export interface IStorage {
   getProfile(): Promise<Profile>;
@@ -11,6 +12,7 @@ export interface IStorage {
   updateProfilePhoto(photoUrl: string): Promise<Profile>;
   getBlogPosts(): Promise<BlogPost[]>;
   syncBlogPosts(): Promise<void>;
+  syncProjects(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -50,6 +52,16 @@ export class DatabaseStorage implements IStorage {
     await db.delete(blogPosts);
     if (posts.length > 0) {
       await db.insert(blogPosts).values(posts);
+    }
+  }
+
+  async syncProjects(): Promise<void> {
+    const projectsList = await loadProjects();
+
+    // Clear existing projects and insert new ones
+    await db.delete(projects);
+    if (projectsList.length > 0) {
+      await db.insert(projects).values(projectsList);
     }
   }
 }
