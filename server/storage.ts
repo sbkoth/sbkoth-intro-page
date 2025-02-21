@@ -5,9 +5,9 @@ import { loadBlogPosts } from "./blog-utils";
 import { loadProjects } from "./project-utils";
 import { loadServices, type Service } from "./services-utils";
 import { loadTestimonials, type Testimonial } from "./testimonials-utils";
-import { loadFeatures } from "./features-utils"; // Assumed file
-import { loadProcess } from "./process-utils"; // Assumed file
-
+import { loadFeatures } from "./features-utils";
+import { loadProcess } from "./process-utils";
+import { cacheService } from "./cache-service";
 
 export interface IStorage {
   getProfile(): Promise<Profile>;
@@ -25,12 +25,21 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   async getProfile(): Promise<Profile> {
+    const cached = cacheService.get('profile');
+    if (cached) return cached;
+
     const [profileData] = await db.select().from(profile);
+    cacheService.set('profile', profileData);
     return profileData;
   }
 
   async getProjects(): Promise<Project[]> {
-    return db.select().from(projects);
+    const cached = cacheService.get('projects');
+    if (cached) return cached;
+
+    const projectsData = await db.select().from(projects);
+    cacheService.set('projects', projectsData);
+    return projectsData;
   }
 
   async createProject(insertProject: InsertProject): Promise<Project> {
@@ -38,6 +47,9 @@ export class DatabaseStorage implements IStorage {
       .insert(projects)
       .values(insertProject)
       .returning();
+
+    // Invalidate projects cache when new project is created
+    cacheService.invalidate('projects');
     return project;
   }
 
@@ -46,45 +58,75 @@ export class DatabaseStorage implements IStorage {
       .update(profile)
       .set({ avatar: photoUrl })
       .returning();
+
+    // Invalidate profile cache when photo is updated
+    cacheService.invalidate('profile');
     return updatedProfile;
   }
 
   async getBlogPosts(): Promise<BlogPost[]> {
-    return db.select().from(blogPosts);
+    const cached = cacheService.get('blogPosts');
+    if (cached) return cached;
+
+    const posts = await db.select().from(blogPosts);
+    cacheService.set('blogPosts', posts);
+    return posts;
   }
 
   async syncBlogPosts(): Promise<void> {
     const posts = await loadBlogPosts();
-
-    // Clear existing posts and insert new ones
     await db.delete(blogPosts);
     if (posts.length > 0) {
       await db.insert(blogPosts).values(posts);
     }
+    // Invalidate blog posts cache after sync
+    cacheService.invalidate('blogPosts');
   }
 
   async syncProjects(): Promise<void> {
     const projectsList = await loadProjects();
-
-    // Clear existing projects and insert new ones
     await db.delete(projects);
     if (projectsList.length > 0) {
       await db.insert(projects).values(projectsList);
     }
+    // Invalidate projects cache after sync
+    cacheService.invalidate('projects');
   }
+
   async getServices(): Promise<Service[]> {
-    return loadServices();
+    const cached = cacheService.get('services');
+    if (cached) return cached;
+
+    const services = await loadServices();
+    cacheService.set('services', services);
+    return services;
   }
 
   async getTestimonials(): Promise<Testimonial[]> {
-    return loadTestimonials();
+    const cached = cacheService.get('testimonials');
+    if (cached) return cached;
+
+    const testimonials = await loadTestimonials();
+    cacheService.set('testimonials', testimonials);
+    return testimonials;
   }
+
   async getFeatures(): Promise<Feature[]> {
-    return loadFeatures();
+    const cached = cacheService.get('features');
+    if (cached) return cached;
+
+    const features = await loadFeatures();
+    cacheService.set('features', features);
+    return features;
   }
 
   async getProcess(): Promise<ProcessStep[]> {
-    return loadProcess();
+    const cached = cacheService.get('process');
+    if (cached) return cached;
+
+    const process = await loadProcess();
+    cacheService.set('process', process);
+    return process;
   }
 }
 
