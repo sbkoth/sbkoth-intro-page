@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { Profile } from "@shared/schema";
@@ -8,6 +9,14 @@ interface HeroProps {
 }
 
 export default function Hero({ profile }: HeroProps) {
+  const calendarButtonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (calendarButtonRef.current && window.initializeGoogleCalendar) {
+      window.initializeGoogleCalendar(calendarButtonRef.current);
+    }
+  }, []);
+
   return (
     <div className="container mx-auto px-4 py-24 md:py-32">
       <div className="flex flex-col md:flex-row items-center gap-8">
@@ -25,12 +34,7 @@ export default function Hero({ profile }: HeroProps) {
             {profile.bio}
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <Button size="lg" asChild>
-              <a href={`mailto:${profile.socials.email}`}>
-                Schedule a Consultation
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </a>
-            </Button>
+            <div ref={calendarButtonRef} className="inline-block"></div>
             <Button variant="outline" size="lg" asChild>
               <a href="#projects">View My Work</a>
             </Button>
@@ -39,4 +43,11 @@ export default function Hero({ profile }: HeroProps) {
       </div>
     </div>
   );
+}
+
+// Add TypeScript type definition for the window object
+declare global {
+  interface Window {
+    initializeGoogleCalendar?: (target: HTMLElement) => void;
+  }
 }
