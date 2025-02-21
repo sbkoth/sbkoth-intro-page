@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import fileUpload from "express-fileupload";
 import path from "path";
 import fs from "fs";
+import fsPromises from "fs/promises";
 import express from "express";
 
 const UPLOAD_DIR = path.join(process.cwd(), "uploads");
@@ -59,6 +60,22 @@ export async function registerRoutes(app: Express) {
     } catch (error) {
       console.error("Error uploading project:", error);
       res.status(500).json({ message: "Failed to upload project" });
+    }
+  });
+
+  app.post("/api/profile/photo", async (req, res) => {
+    try {
+      // Copy the photo from attached_assets to uploads
+      const sourcePhotoPath = path.join(process.cwd(), "attached_assets", "sbk-profile-photo-small.jpg");
+      const targetFilename = `${Date.now()}-profile-photo.jpg`;
+      const targetPhotoPath = path.join(UPLOAD_DIR, targetFilename);
+
+      await fsPromises.copyFile(sourcePhotoPath, targetPhotoPath);
+      await storage.updateProfilePhoto(`/uploads/${targetFilename}`);
+      res.json({ url: `/uploads/${targetFilename}` });
+    } catch (error) {
+      console.error("Error uploading profile photo:", error);
+      res.status(500).json({ message: "Failed to upload photo" });
     }
   });
 
