@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Project, ImageContent, PdfContent, SlidesContent, TextContent } from "@shared/schema";
+import type { Project } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import PdfViewer from "./pdf-viewer";
@@ -13,23 +13,23 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const [open, setOpen] = useState(false);
 
   const renderContent = () => {
-    switch (project.content.type) {
+    switch (project.type) {
       case "image":
         return (
           <img 
-            src={(project.content as ImageContent).url} 
+            src={project.content.url} 
             alt={project.title}
             className="w-full h-full object-cover"
           />
         );
       case "pdf":
-        return <PdfViewer url={(project.content as PdfContent).url} />;
+        return <PdfViewer url={project.content.url} />;
       case "slides":
-        return <SlideViewer slides={(project.content as SlidesContent).slides} />;
+        return <SlideViewer slides={project.content.slides} />;
       case "text":
         return (
           <div className="prose prose-sm max-w-none">
-            {(project.content as TextContent).text}
+            {project.content.text}
           </div>
         );
     }

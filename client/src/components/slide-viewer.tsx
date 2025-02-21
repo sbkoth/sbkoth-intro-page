@@ -25,7 +25,6 @@ export default function SlideViewer({ slides }: SlideViewerProps) {
           size="icon"
           onClick={prev}
           disabled={currentSlide === 0}
-          className="bg-background/80 backdrop-blur-sm"
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
@@ -34,7 +33,6 @@ export default function SlideViewer({ slides }: SlideViewerProps) {
           size="icon"
           onClick={next}
           disabled={currentSlide === slides.length - 1}
-          className="bg-background/80 backdrop-blur-sm"
         >
           <ChevronRight className="h-4 w-4" />
         </Button>

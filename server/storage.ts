@@ -32,7 +32,7 @@ export class MemStorage implements IStorage {
         title: "Getting Started with React",
         content: "Full blog post content here...",
         excerpt: "Learn the fundamentals of React and how to build modern web applications.",
-        publishedAt: new Date("2024-02-15"),
+        publishedAt: new Date("2024-02-15").toISOString(),
         thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee"
       },
       {
@@ -40,7 +40,7 @@ export class MemStorage implements IStorage {
         title: "The Future of Web Development",
         content: "Full blog post content here...",
         excerpt: "Exploring upcoming trends and technologies in web development.",
-        publishedAt: new Date("2024-02-10"),
+        publishedAt: new Date("2024-02-10").toISOString(),
         thumbnail: "https://images.unsplash.com/photo-1504639725590-34d0984388bd"
       }
     ];
@@ -52,7 +52,6 @@ export class MemStorage implements IStorage {
         description: "A beautiful web application",
         type: "image",
         content: {
-          type: "image",
           url: "https://images.unsplash.com/photo-1484981138541-3d074aa97716"
         },
         thumbnail: "https://images.unsplash.com/photo-1484981138541-3d074aa97716",
@@ -64,7 +63,6 @@ export class MemStorage implements IStorage {
         description: "Technical documentation",
         type: "pdf",
         content: {
-          type: "pdf",
           url: "https://example.com/sample.pdf"
         },
         thumbnail: "https://images.unsplash.com/photo-1425421669292-0c3da3b8f529",
@@ -76,7 +74,6 @@ export class MemStorage implements IStorage {
         description: "Presentation deck",
         type: "slides",
         content: {
-          type: "slides",
           slides: [
             "https://images.unsplash.com/photo-1710855492709-aa06902e181c",
             "https://images.unsplash.com/photo-1716788781066-7dbce308bbe0",
@@ -95,7 +92,7 @@ export class MemStorage implements IStorage {
 
   async getBlogPosts(): Promise<BlogPost[]> {
     return this.blogPosts.sort((a, b) => 
-      b.publishedAt.getTime() - a.publishedAt.getTime()
+      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     );
   }
 
