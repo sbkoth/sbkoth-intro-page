@@ -16,7 +16,7 @@ export default function BlogSection({ posts }: BlogSectionProps) {
     <>
       <div className="container mx-auto px-4 py-16 bg-accent/5">
         <div className="max-w-2xl mx-auto text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Industry Insights</h2>
+          <h2 className="text-3xl font-bold mb-4">Blog</h2>
           <p className="text-lg text-muted-foreground">
             Deep dives into technical architecture, cloud solutions, and enterprise best practices.
             Stay updated with the latest in technology and system design.
@@ -41,13 +41,6 @@ export default function BlogSection({ posts }: BlogSectionProps) {
                 </p>
               </CardHeader>
               <CardContent>
-                <div className="aspect-video mb-4 overflow-hidden rounded-md">
-                  <img 
-                    src={post.thumbnail} 
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
                 <p className="text-muted-foreground line-clamp-3">{post.excerpt}</p>
               </CardContent>
             </Card>
