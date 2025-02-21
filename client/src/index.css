@@ -17,12 +17,11 @@
                 color var(--transition-duration) ease-in-out;
   }
 
-  /* Add smooth transitions to all themed elements */
-  *, *::before, *::after {
+  /* Only transition specific theme-related properties */
+  [data-theme="dark"],
+  [data-theme="light"] {
     transition: background-color var(--transition-duration) ease-in-out,
                 border-color var(--transition-duration) ease-in-out,
-                color var(--transition-duration) ease-in-out,
-                fill var(--transition-duration) ease-in-out,
-                stroke var(--transition-duration) ease-in-out;
+                color var(--transition-duration) ease-in-out;
   }
 }

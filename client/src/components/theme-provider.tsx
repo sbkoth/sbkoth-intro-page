@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ThemeProvider as NextThemesProvider, useTheme as useNextTheme } from "next-themes"
+import { ThemeProvider as NextThemesProvider, useTheme as useNextThemes } from "next-themes"
 import type { ThemeProviderProps } from "next-themes"
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
@@ -10,22 +10,18 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 
 export function useTheme() {
   const [mounted, setMounted] = React.useState(false)
-  const { theme, setTheme, systemTheme } = useNextTheme()
+  const { theme, setTheme } = useNextThemes()
 
   React.useEffect(() => {
     setMounted(true)
-    console.log('Theme Provider Mounted:', { theme, systemTheme })
-  }, [theme, systemTheme])
+  }, [])
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light'
-    console.log('Toggling theme:', { current: theme, new: newTheme })
-    setTheme(newTheme)
-  }
+  const toggleTheme = React.useCallback(() => {
+    setTheme(theme === 'light' ? 'dark' : 'light')
+  }, [theme, setTheme])
 
   return {
     theme: mounted ? theme : undefined,
-    systemTheme: mounted ? systemTheme : undefined,
     toggleTheme,
     mounted
   }
