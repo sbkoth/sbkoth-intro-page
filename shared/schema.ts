@@ -1,23 +1,6 @@
-import { pgTable, text, serial, jsonb, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-
-export const admins = pgTable("admins", {
-  id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  passwordHash: text("password_hash").notNull(),
-});
-
-export const projects = pgTable("projects", {
-  id: serial("id").primaryKey(),
-  title: text("title").notNull(),
-  description: text("description").notNull(),
-  type: text("type", { enum: ["image", "pdf", "slides", "text"] }).notNull(),
-  content: jsonb("content").notNull(),
-  thumbnail: text("thumbnail").notNull(),
-  order: serial("order").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
 
 export const profile = pgTable("profile", {
   id: serial("id").primaryKey(),
@@ -33,30 +16,19 @@ export const profile = pgTable("profile", {
   }>().notNull(),
 });
 
-export const blogPosts = pgTable("blog_posts", {
+export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
-  content: text("content").notNull(),
-  excerpt: text("excerpt").notNull(),
-  publishedAt: timestamp("published_at").notNull(),
+  description: text("description").notNull(),
+  type: text("type", { enum: ["image", "pdf", "slides", "text"] }).notNull(),
+  content: jsonb("content").notNull(),
   thumbnail: text("thumbnail").notNull(),
 });
 
-export const insertProjectSchema = createInsertSchema(projects).omit({ 
-  id: true, 
-  order: true,
-  createdAt: true 
-});
-
+export const insertProjectSchema = createInsertSchema(projects).omit({ id: true });
 export const insertProfileSchema = createInsertSchema(profile).omit({ id: true });
-export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({ id: true });
-export const insertAdminSchema = createInsertSchema(admins).omit({ id: true });
 
 export type Project = typeof projects.$inferSelect;
 export type Profile = typeof profile.$inferSelect;
-export type BlogPost = typeof blogPosts.$inferSelect;
-export type Admin = typeof admins.$inferSelect;
 export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type InsertProfile = z.infer<typeof insertProfileSchema>;
-export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
-export type InsertAdmin = z.infer<typeof insertAdminSchema>;

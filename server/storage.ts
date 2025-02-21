@@ -1,12 +1,10 @@
-import type { Project, Profile, BlogPost, InsertProject } from "@shared/schema";
-import { projects, profile, blogPosts } from "@shared/schema";
+import type { Project, Profile, InsertProject } from "@shared/schema";
+import { projects, profile } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   getProfile(): Promise<Profile>;
   getProjects(): Promise<Project[]>;
-  getBlogPosts(): Promise<BlogPost[]>;
   createProject(project: InsertProject): Promise<Project>;
 }
 
@@ -16,16 +14,8 @@ export class DatabaseStorage implements IStorage {
     return profileData;
   }
 
-  async getBlogPosts(): Promise<BlogPost[]> {
-    return db.select()
-      .from(blogPosts)
-      .orderBy(desc(blogPosts.publishedAt));
-  }
-
   async getProjects(): Promise<Project[]> {
-    return db.select()
-      .from(projects)
-      .orderBy(projects.order);
+    return db.select().from(projects);
   }
 
   async createProject(insertProject: InsertProject): Promise<Project> {
