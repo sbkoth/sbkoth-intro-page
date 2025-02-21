@@ -29,18 +29,44 @@ This is a strategic freelancer portfolio platform designed to maximize professio
    cd <repository-name>
    ```
 
-2. Install dependencies:
+2. Install Node.js:
+   - Required version: v20 or later
+   - Download from: https://nodejs.org/
+
+3. Install dependencies:
    ```bash
    npm install
    ```
 
-3. Set up environment variables:
-   Create a `.env` file in the root directory with the following variables:
-   ```
-   DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<database>
+4. Set up PostgreSQL:
+   - Install PostgreSQL 15 or later
+   - Create a new database:
+     ```sql
+     CREATE DATABASE portfolio;
+     ```
+   - The application uses Drizzle ORM for database management
+
+5. Set up environment variables:
+   Create a `.env` file in the root directory:
+   ```env
+   # Database
+   DATABASE_URL=postgresql://<user>:<password>@localhost:5432/portfolio
+
+   # Optional: For image uploads
+   CLOUDINARY_CLOUD_NAME=your_cloud_name
+   CLOUDINARY_API_KEY=your_api_key
+   CLOUDINARY_API_SECRET=your_api_secret
+
+   # Optional: For Google Calendar integration
+   GOOGLE_CALENDAR_ID=your_calendar_id
    ```
 
-4. Start the development server:
+6. Initialize the database:
+   ```bash
+   npm run db:push
+   ```
+
+7. Start the development server:
    ```bash
    npm run dev
    ```
@@ -69,221 +95,610 @@ The application will be available at `http://localhost:5000`.
 └── shared/             # Shared TypeScript types and schemas
 ```
 
-## Adding New Content
+## Production Deployment
 
-### Adding Blog Posts
-Create a new markdown file in `content/blogs/` with the following structure:
-```markdown
----
-title: Your Blog Title
-excerpt: A brief description of your blog post
-publishedAt: YYYY-MM-DD
-thumbnail: /uploads/your-image.jpg
----
+### Docker Deployment
 
-# Your Blog Content
+1. Create a Dockerfile:
+```dockerfile
+FROM node:20-alpine
 
-Write your blog content here using Markdown.
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY . .
+RUN npm run build
+
+EXPOSE 5000
+CMD ["npm", "start"]
 ```
 
-### Adding Services
-Create a new markdown file in `content/services/` with the following structure:
-```markdown
----
-title: Service Name
-icon: IconName    # Use icon names from lucide-react
-description: Brief service description
----
+2. Create docker-compose.yml:
+```yaml
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/portfolio
+      - NODE_ENV=production
+    depends_on:
+      - db
+    volumes:
+      - ./content:/app/content
+      - ./uploads:/app/uploads
 
-# Detailed Service Description
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=portfolio
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
-Write your service details here using Markdown.
+volumes:
+  postgres_data:
 ```
 
-### Adding Features
-Create a new markdown file in `content/features/` with the following structure:
-```markdown
----
-title: Feature Name
-icon: IconName    # Use icon names from lucide-react
-description: Brief feature description
-highlights:
-  - Highlight point 1
-  - Highlight point 2
-  - Highlight point 3
----
-
-# Detailed Feature Description
-
-Write your feature details here using Markdown.
+3. Build and run:
+```bash
+docker-compose up --build
 ```
 
-### Adding Projects
-Projects can be added through the admin interface at `/admin`, or by creating a new markdown file in `content/projects/`:
-```markdown
----
-title: Project Name
-description: Brief project description
-type: text        # Options: text, pdf, slides, image
-challenge: Project challenge description
-approach: Your approach to solving the challenge
-implementation: Implementation details
-outcomes:
-  - Outcome 1
-  - Outcome 2
-technologies:
-  - Tech 1
-  - Tech 2
-thumbnail: /uploads/project-thumbnail.jpg
----
+### Web Server Configuration
 
-# Detailed Project Description
+#### Nginx Setup
+```nginx
+# /etc/nginx/sites-available/portfolio
+server {
+    listen 80;
+    server_name your-domain.com;
 
-Write your project details here using Markdown.
-```
+    # Redirect HTTP to HTTPS
+    return 301 https://$server_name$request_uri;
+}
 
-### Content Card Components
+server {
+    listen 443 ssl http2;
+    server_name your-domain.com;
 
-Each content type (Blog Posts, Services, Features, Projects) uses specific React components for rendering:
+    # SSL configuration
+    ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    ssl_session_tickets off;
 
-#### Blog Posts (`BlogSection.tsx`)
-- Displays blog post cards in a grid layout
-- Each card shows:
-  - Title
-  - Publication date
-  - Excerpt
-  - Opens detailed content in a dialog
+    # Modern configuration
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+    ssl_prefer_server_ciphers off;
 
-#### Services (`Services.tsx`)
-- Renders service cards in a responsive grid
-- Each card displays:
-  - Service icon (from lucide-react)
-  - Title
-  - Brief description
-  - Opens detailed content in a dialog
+    # HSTS (uncomment if you're sure)
+    # add_header Strict-Transport-Security "max-age=63072000" always;
 
-#### Features (`Features.tsx`)
-- Shows feature cards in a two-column grid
-- Each card contains:
-  - Feature icon (from lucide-react)
-  - Title
-  - Description
-  - Bullet points for highlights
-  - Opens detailed content in a dialog
+    # Root directory and index
+    root /path/to/app/dist/client;
+    index index.html;
 
-#### Projects (`ProjectGrid.tsx` and `CaseStudy.tsx`)
-- Displays project cards in a grid
-- Supports multiple content types (case studies, PDFs, slides)
-- Case studies include:
-  - Challenge
-  - Approach
-  - Implementation
-  - Technologies used
-  - Outcomes
+    # Asset caching
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
+        expires 7d;
+        add_header Cache-Control "public, no-transform";
+    }
 
-### Adding New Card Types
+    # API proxy
+    location /api {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
 
-To add a new type of content card:
+        # CORS headers
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE' always;
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization' always;
+    }
 
-1. Create the content type interface in `shared/schema.ts`:
-```typescript
-export interface NewContentType {
-  title: string;
-  description: string;
-  // Add other required fields
+    # Everything else goes to index.html
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
 }
 ```
 
-2. Add the content loading function in `server/`:
-```typescript
-export async function loadNewContent(): Promise<NewContentType[]> {
-  // Implementation
+#### Apache Setup
+```apache
+# /etc/apache2/sites-available/portfolio.conf
+<VirtualHost *:80>
+    ServerName your-domain.com
+    Redirect permanent / https://your-domain.com/
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName your-domain.com
+    DocumentRoot /path/to/app/dist/client
+
+    SSLEngine on
+    SSLCertificateFile /etc/letsencrypt/live/your-domain.com/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/your-domain.com/privkey.pem
+
+    # API Proxy
+    ProxyPreserveHost On
+    ProxyPass /api http://localhost:5000/api
+    ProxyPassReverse /api http://localhost:5000/api
+
+    # CORS Headers
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS, PUT, DELETE"
+    Header set Access-Control-Allow-Headers "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization"
+
+    # Asset Caching
+    <FilesMatch "\.(jpg|jpeg|png|gif|ico|css|js)$">
+        Header set Cache-Control "max-age=604800, public"
+    </FilesMatch>
+
+    # SPA Routing
+    <Directory /path/to/app/dist/client>
+        Options -MultiViews
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^ index.html [QSA,L]
+    </Directory>
+</VirtualHost>
+```
+
+### SSL Certificate Setup
+
+Using Let's Encrypt:
+
+```bash
+# Install certbot
+sudo apt install certbot
+
+# For Nginx
+sudo apt install python3-certbot-nginx
+sudo certbot --nginx -d your-domain.com
+
+# For Apache
+sudo apt install python3-certbot-apache
+sudo certbot --apache -d your-domain.com
+
+# Auto-renewal
+sudo certbot renew --dry-run
+```
+
+### Local Development Troubleshooting
+
+#### Database Issues
+1. Connection Errors:
+   ```bash
+   # Check PostgreSQL status
+   sudo systemctl status postgresql
+
+   # Verify connection
+   psql $DATABASE_URL -c '\conninfo'
+
+   # Create database if missing
+   createdb portfolio
+   ```
+
+2. Migration Issues:
+   ```bash
+   # Clear database and recreate
+   dropdb portfolio
+   createdb portfolio
+   npm run db:push
+
+   # View current schema
+   drizzle-kit introspect:pg
+   ```
+
+3. Permission Issues:
+   ```sql
+   -- Grant necessary permissions
+   GRANT ALL PRIVILEGES ON DATABASE portfolio TO your_user;
+   GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO your_user;
+   ```
+
+#### Build Issues
+1. Clean Install:
+   ```bash
+   # Remove dependencies and reinstall
+   rm -rf node_modules
+   rm package-lock.json
+   npm cache clean --force
+   npm install
+   ```
+
+2. TypeScript Errors:
+   ```bash
+   # Clear TypeScript cache
+   rm -rf dist
+   rm tsconfig.tsbuildinfo
+   npm run type-check
+   ```
+
+3. Vite Issues:
+   ```bash
+   # Clear Vite cache
+   rm -rf node_modules/.vite
+   ```
+
+### Database Management
+
+#### Backup Procedures
+1. Automated Daily Backups:
+   ```bash
+   #!/bin/bash
+   # /etc/cron.daily/portfolio-backup
+
+   BACKUP_DIR="/path/to/backups"
+   FILENAME="portfolio-$(date +%Y%m%d).sql"
+
+   # Create backup
+   pg_dump $DATABASE_URL > "$BACKUP_DIR/$FILENAME"
+
+   # Compress
+   gzip "$BACKUP_DIR/$FILENAME"
+
+   # Keep last 30 days
+   find "$BACKUP_DIR" -type f -mtime +30 -delete
+   ```
+
+2. Manual Backup:
+   ```bash
+   # Full backup
+   npm run db:backup
+
+   # Backup specific tables
+   pg_dump -t table_name $DATABASE_URL > table_backup.sql
+   ```
+
+#### Restore Procedures
+```bash
+# Full restore
+psql $DATABASE_URL < backup.sql
+
+# Restore specific tables
+psql $DATABASE_URL < table_backup.sql
+```
+
+### Environment Configuration
+
+Create different environment files for different environments:
+
+`.env.development`:
+```env
+NODE_ENV=development
+PORT=5000
+DATABASE_URL=postgresql://localhost:5432/portfolio
+VITE_API_URL=http://localhost:5000
+```
+
+`.env.production`:
+```env
+NODE_ENV=production
+PORT=5000
+DATABASE_URL=postgresql://production:password@localhost:5432/portfolio
+VITE_API_URL=https://your-domain.com
+```
+
+`.env.test`:
+```env
+NODE_ENV=test
+PORT=5000
+DATABASE_URL=postgresql://localhost:5432/portfolio_test
+VITE_API_URL=http://localhost:5000
+```
+
+Load environment variables based on environment:
+```bash
+# Development
+source .env.development
+
+# Production
+source .env.production
+
+# Test
+source .env.test
+```
+
+### PM2 Process Manager
+
+1. Install PM2:
+```bash
+npm install -g pm2
+```
+
+2. Create ecosystem.config.js:
+```javascript
+module.exports = {
+  apps: [{
+    name: 'portfolio',
+    script: 'dist/server/index.js',
+    instances: 'max',
+    exec_mode: 'cluster',
+    env: {
+      NODE_ENV: 'production',
+      PORT: 5000
+    }
+  }]
 }
 ```
 
-3. Update `server/storage.ts`:
-```typescript
-export interface IStorage {
-  // Add new method
-  getNewContent(): Promise<NewContentType[]>;
-}
+3. Start with PM2:
+```bash
+pm2 start ecosystem.config.js
 ```
 
-4. Create a new React component in `client/src/components/`:
-```typescript
-export default function NewContentSection({ items }: { items: NewContentType[] }) {
-  // Implementation
-}
+### Systemd Service
+
+1. Create service file `/etc/systemd/system/portfolio.service`:
+```ini
+[Unit]
+Description=Portfolio Application
+After=network.target
+
+[Service]
+Type=simple
+User=node
+WorkingDirectory=/path/to/app
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+Environment=NODE_ENV=production
+Environment=PORT=5000
+
+[Install]
+WantedBy=multi-user.target
 ```
 
-5. Add the component to `client/src/pages/home.tsx`
-
-### Styling Guidelines for Cards
-
-Follow these guidelines when styling content cards:
-
-```typescript
-// Base card styles
-className="hover:shadow-lg transition-all cursor-pointer hover:scale-[1.02]"
-
-// Grid layouts
-className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-
-// Card headers
-className="flex items-center gap-4"
-
-// Icons
-className="text-primary h-8 w-8"
-
-// Descriptions
-className="text-muted-foreground"
+2. Enable and start service:
+```bash
+systemctl enable portfolio
+systemctl start portfolio
 ```
 
-### Component Integration
+## CI/CD Setup
 
-When adding new card types:
+### GitHub Actions Example
 
-1. Use the existing `ContentDialog` component for detailed views
-2. Implement proper loading states
-3. Add error boundaries
-4. Ensure responsive design
-5. Follow accessibility guidelines
+Create `.github/workflows/deploy.yml`:
 
-### Icon Guidelines
-- Use icons from `lucide-react` for all icon fields
-- Common icons:
-  - Features: `Code2`, `GitMerge`, `AlertCircle`, `Zap`
-  - Services: `Database`, `Cloud`, `Shield`, `Brain`, `ChartBar`
+```yaml
+name: Deploy
 
-### Image Guidelines
-- Store images in `uploads/` directory
-- Use relative paths starting with `/uploads/`
-- Recommended image sizes:
-  - Blog thumbnails: 800x400px
-  - Project thumbnails: 1200x630px
-  - Profile photos: 400x400px
+on:
+  push:
+    branches: [ main ]
 
-## Configuration
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-The project uses several configuration files:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-- `vite.config.ts`: Vite bundler configuration
-- `tailwind.config.ts`: Tailwind CSS configuration
-- `theme.json`: UI theme configuration
-- `tsconfig.json`: TypeScript configuration
-- `drizzle.config.ts`: Database ORM configuration
+      - name: Install dependencies
+        run: npm ci
 
-### Theme Customization
+      - name: Type check
+        run: npm run type-check
 
-1. Edit `theme.json` to modify the color scheme and appearance:
-```json
-{
-  "primary": "#0066cc",
-  "variant": "professional",
-  "appearance": "system",
-  "radius": 0.5
-}
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /path/to/app
+            git pull
+            npm ci --production
+            npm run build
+            pm2 reload portfolio
 ```
+
+## Development vs Production
+
+### Development Environment Features
+- Hot module reloading
+- Detailed error messages
+- Source maps enabled
+- In-memory caching
+- Development-specific logging
+
+### Production Environment Features
+- Optimized builds
+- Minified assets
+- Error tracking
+- Production logging levels
+- Performance monitoring
+
+### Production Checklist
+
+Before deploying to production:
+
+1. Security:
+   - Enable CORS protection
+   - Set up rate limiting
+   - Configure security headers
+   - Enable HTTPS
+   - Set secure cookie options
+   - Implement proper authentication
+
+2. Performance:
+   - Enable compression
+   - Configure caching headers
+   - Optimize static assets
+   - Set up CDN
+   - Configure database indexes
+
+3. Monitoring:
+   - Set up error tracking
+   - Configure application logging
+   - Implement health checks
+   - Monitor database performance
+   - Track API metrics
+
+4. Backup:
+   - Set up database backups
+   - Configure content backups
+   - Store configuration backups
+   - Test restore procedures
+
+
+## Scripts and Commands
+
+Available npm scripts:
+
+```bash
+# Development
+npm run dev          # Start development server
+npm run type-check   # Run TypeScript type checking
+npm run lint         # Run ESLint
+npm run format      # Run Prettier formatting
+
+# Database
+npm run db:push     # Push schema changes to database
+npm run db:generate # Generate new migration
+npm run db:backup   # Create database backup
+
+# Production
+npm run build       # Build for production
+npm run start       # Start production server
+```
+
+## Environment Variables
+
+Required environment variables:
+
+```env
+# Database (Required)
+DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<database>
+
+# Server (Optional)
+PORT=5000                    # Default: 5000
+NODE_ENV=production         # Default: development
+VITE_API_URL=https://your-domain.com
+
+# Image Upload (Optional)
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Google Calendar (Optional)
+GOOGLE_CALENDAR_ID=your_calendar_id
+```
+
+### Maintenance
+
+1. Regular Updates:
+   ```bash
+   # Update dependencies
+   npm update
+
+   # Check for vulnerabilities
+   npm audit
+
+   # Run tests
+   npm run test
+   ```
+
+2. Database Maintenance:
+   ```bash
+   # Backup database
+   npm run db:backup
+
+   # Check database health
+   pg_healthcheck $DATABASE_URL
+
+   # Vacuum database
+   psql $DATABASE_URL -c "VACUUM ANALYZE;"
+   ```
+
+3. Monitoring:
+   ```bash
+   # Check application logs
+   tail -f /var/log/portfolio.log
+
+   # Monitor database connections
+   psql $DATABASE_URL -c "SELECT * FROM pg_stat_activity;"
+   ```
+
+4. Content Management:
+   - Regular backups of content directory
+   - Monitor disk usage
+   - Clean up unused uploads
+   - Validate markdown content
+
+### Common Issues and Solutions
+
+1. Database Connection Issues:
+   ```bash
+   # Check connection
+   psql $DATABASE_URL -c '\conninfo'
+
+   # Verify permissions
+   psql $DATABASE_URL -c '\du'
+   ```
+
+2. Build Problems:
+   ```bash
+   # Clean install
+   rm -rf node_modules package-lock.json
+   npm cache clean --force
+   npm install
+   ```
+
+3. Server Issues:
+   ```bash
+   # Check Node.js version
+   node --version
+
+   # Verify port availability
+   lsof -i :5000
+   ```
+
+4. Content Problems:
+   ```bash
+   # Verify file permissions
+   ls -la content/
+
+   # Check file syntax
+   npm run content:validate
+   ```
+
+### Support and Resources
+
+If you need help:
+1. Check the troubleshooting section above
+2. Review application logs
+3. Open an issue in the repository
+4. Contact the development team
+
+For additional resources:
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [React Documentation](https://react.dev/)
+- [Vite Documentation](https://vitejs.dev/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 
 ## Database Management
 ### Backup and Restore
