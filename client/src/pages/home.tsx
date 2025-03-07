@@ -1,37 +1,60 @@
 import { useQuery } from "@tanstack/react-query";
+import { Suspense } from "react";
 import Hero from "@/components/hero";
 import Services from "@/components/services";
 import ProjectGrid from "@/components/project-grid";
 import BlogSection from "@/components/blog-section";
 import Contact from "@/components/contact";
 import Features from "@/components/features";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { Profile, Project, BlogPost } from "@shared/schema";
 
+// Loading skeleton component
+const LoadingSkeleton = () => (
+  <div className="space-y-8 p-4">
+    <Skeleton className="h-[400px] w-full" />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Skeleton className="h-[200px]" />
+      <Skeleton className="h-[200px]" />
+    </div>
+  </div>
+);
+
 export default function Home() {
-  const { data: profile } = useQuery<Profile>({ 
+  const { data: profile, isError: profileError } = useQuery<Profile>({ 
     queryKey: ["/api/profile"]
   });
 
-  const { data: projects } = useQuery<Project[]>({
+  const { data: projects, isError: projectsError } = useQuery<Project[]>({
     queryKey: ["/api/projects"]
   });
 
-  const { data: posts } = useQuery<BlogPost[]>({
+  const { data: posts, isError: postsError } = useQuery<BlogPost[]>({
     queryKey: ["/api/blog-posts"]
   });
 
+  if (profileError || projectsError || postsError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-destructive">Failed to load content. Please try again later.</p>
+      </div>
+    );
+  }
+
   if (!profile || !projects || !posts) {
-    return null; // Add loading skeleton later if needed
+    return <LoadingSkeleton />;
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <Hero profile={profile} />
-      <Features />
-      <Services />
-      <ProjectGrid projects={projects} />
-      <BlogSection posts={posts} />
-      <Contact profile={profile} />
+      <Suspense fallback={<LoadingSkeleton />}>
+        <Hero profile={profile} />
+        <Features />
+        <Services />
+        <ProjectGrid projects={projects} />
+        <BlogSection posts={posts} />
+        <Contact profile={profile} />
+      </Suspense>
     </div>
   );
 }
