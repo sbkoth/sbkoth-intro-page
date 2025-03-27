@@ -76,4 +76,41 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+// Add consistent styling for bullet points across all card components
+const CardBulletList = React.forwardRef<
+  HTMLUListElement,
+  React.HTMLAttributes<HTMLUListElement>
+>(({ className, ...props }, ref) => (
+  <ul
+    ref={ref}
+    className={cn("space-y-2 mt-4", className)}
+    {...props}
+  />
+))
+CardBulletList.displayName = "CardBulletList"
+
+const CardBulletItem = React.forwardRef<
+  HTMLLIElement,
+  React.HTMLAttributes<HTMLLIElement>
+>(({ className, ...props }, ref) => (
+  <li
+    ref={ref}
+    className={cn("flex items-center gap-2", className)}
+    {...props}
+  >
+    <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0" />
+    <span className="text-sm">{props.children}</span>
+  </li>
+))
+CardBulletItem.displayName = "CardBulletItem"
+
+export { 
+  Card, 
+  CardHeader, 
+  CardFooter, 
+  CardTitle, 
+  CardDescription, 
+  CardContent,
+  CardBulletList,
+  CardBulletItem
+}

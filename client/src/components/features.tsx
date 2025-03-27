@@ -1,5 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle, 
+  CardBulletList, 
+  CardBulletItem 
+} from "@/components/ui/card";
 import { Code2, GitMerge, AlertCircle, Zap } from "lucide-react";
 import { useState } from "react";
 import type { Feature } from "../../../server/features-utils";
@@ -44,14 +51,11 @@ export default function Features() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-4">{feature.description}</p>
-                <ul className="space-y-2">
+                <CardBulletList>
                   {feature.highlights.map((highlight, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-sm">{highlight}</span>
-                    </li>
+                    <CardBulletItem key={i}>{highlight}</CardBulletItem>
                   ))}
-                </ul>
+                </CardBulletList>
               </CardContent>
             </Card>
           ))}
