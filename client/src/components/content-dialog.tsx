@@ -12,22 +12,22 @@ export default function ContentDialog({ title, content, isOpen, onClose }: Conte
   // Use a simpler approach for rendering markdown with custom bullet points
   const processContent = () => {
     // Parse the markdown content
-    let html = marked.parse(content);
+    const html = marked.parse(content) as string;
     
     // Replace default list items with custom styled ones
     // This uses regex to find list items and add our custom styling
-    html = html.replace(
+    const withBullets = html.replace(
       /<li>(.*?)<\/li>/g, 
       '<li class="flex items-center gap-2 my-2"><div class="h-2 w-2 rounded-full bg-primary flex-shrink-0"></div><span>$1</span></li>'
     );
     
     // Enhance the styling of unordered lists
-    html = html.replace(
-      /<ul>(.*?)<\/ul>/gs, 
+    const withStyledLists = withBullets.replace(
+      /<ul>(.*?)<\/ul>/g, 
       '<ul class="space-y-2 my-4 list-none pl-0">$1</ul>'
     );
     
-    return html;
+    return withStyledLists;
   };
 
   const htmlContent = processContent();

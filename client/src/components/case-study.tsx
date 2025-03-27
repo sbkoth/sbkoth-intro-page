@@ -79,11 +79,14 @@ export default function CaseStudy({ project }: CaseStudyProps) {
             <h3>Key Outcomes</h3>
           </div>
           {project.outcomes && (
-            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+            <div className="space-y-2 text-muted-foreground">
               {project.outcomes.map((outcome, index) => (
-                <li key={index}>{outcome}</li>
+                <div key={index} className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0" />
+                  <span>{outcome}</span>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </div>
       </CardContent>
