@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Database, Cloud, Shield, Code, Brain, ChartBar } from "lucide-react";
+import { Database, Cloud, Shield, Code, Brain, ChartBar, Server, Network, Bot, GitMerge, Cpu } from "lucide-react";
 import { useState } from "react";
 import type { Service } from "../../../server/services-utils";
 import ContentDialog from "./content-dialog";
@@ -12,6 +12,11 @@ const iconMap: Record<string, React.ReactNode> = {
   Code: <Code className="h-8 w-8" />,
   Brain: <Brain className="h-8 w-8" />,
   ChartBar: <ChartBar className="h-8 w-8" />,
+  Server: <Server className="h-8 w-8" />,
+  Network: <Network className="h-8 w-8" />,
+  Bot: <Bot className="h-8 w-8" />,
+  GitMerge: <GitMerge className="h-8 w-8" />,
+  Cpu: <Cpu className="h-8 w-8" />,
 };
 
 export default function Services() {
