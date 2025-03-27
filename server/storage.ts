@@ -1,11 +1,10 @@
-import type { Project, Profile, InsertProject, BlogPost, InsertBlogPost, Feature, ProcessStep } from "@shared/schema";
+import type { Project, Profile, InsertProject, BlogPost, InsertBlogPost, Feature } from "@shared/schema";
 import { projects, profile, blogPosts } from "@shared/schema";
 import { db } from "./db";
 import { loadBlogPosts } from "./blog-utils";
 import { loadProjects } from "./project-utils";
 import { loadServices, type Service } from "./services-utils";
 import { loadFeatures } from "./features-utils";
-import { loadProcess } from "./process-utils";
 import { cacheService } from "./cache-service";
 
 export interface IStorage {
@@ -18,7 +17,6 @@ export interface IStorage {
   syncBlogPosts(): Promise<void>;
   syncProjects(): Promise<void>;
   getFeatures(): Promise<Feature[]>;
-  getProcess(): Promise<ProcessStep[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -107,15 +105,6 @@ export class DatabaseStorage implements IStorage {
     const features = await loadFeatures();
     cacheService.set('features', features);
     return features;
-  }
-
-  async getProcess(): Promise<ProcessStep[]> {
-    const cached = cacheService.get('process');
-    if (cached) return cached;
-
-    const process = await loadProcess();
-    cacheService.set('process', process);
-    return process;
   }
 }
 

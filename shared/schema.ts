@@ -57,16 +57,6 @@ export const featureSchema = z.object({
   content: z.string(),
 });
 
-// ProcessStep schema
-export const processStepSchema = z.object({
-  title: z.string(),
-  order: z.number(),
-  icon: z.string(),
-  description: z.string(),
-  steps: z.array(z.string()),
-  content: z.string(),
-});
-
 // Project schemas
 export const insertProjectSchema = createInsertSchema(projects)
   .omit({ id: true })
@@ -85,4 +75,3 @@ export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type InsertProfile = z.infer<typeof insertProfileSchema>;
 export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
 export type Feature = z.infer<typeof featureSchema>;
-export type ProcessStep = z.infer<typeof processStepSchema>;
