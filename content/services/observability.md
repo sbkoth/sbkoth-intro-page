@@ -1,6 +1,6 @@
 ---
 title: Observability Engineering
-icon: LineChart
+icon: ChartBar
 description: Design and implement comprehensive observability solutions for complex distributed systems
 ---
 
