@@ -1,12 +1,12 @@
 ---
 title: Payment Processing & Financial Data
 icon: CreditCard
-description: Architect secure, reliable payment processing systems with real-time analytics and regulatory compliance 
+description: Architects secure, reliable payment processing systems with real-time analytics and regulatory compliance 
 ---
 
 # Payment Processing & Financial Data
 
-We engineer comprehensive payment processing solutions that integrate transaction processing, financial reporting, and compliance systems to deliver actionable financial intelligence while maintaining the highest security standards.
+The consultant engineers comprehensive payment processing solutions that integrate transaction processing, financial reporting, and compliance systems to deliver actionable financial intelligence while maintaining the highest security standards.
 
 ## Specialized Capabilities
 
@@ -18,8 +18,8 @@ We engineer comprehensive payment processing solutions that integrate transactio
 
 ## Technical Expertise
 
-- Design of fault-tolerant payment data pipelines with comprehensive data lineage tracking
-- Integration with payment gateways, banking systems and financial service providers
-- Real-time stream processing for fraud detection and anomaly identification
-- Secure cloud-native financial data storage and analytics platforms
-- Automated reconciliation systems with intelligent exception handling
+- Designs fault-tolerant payment data pipelines with comprehensive data lineage tracking
+- Integrates with payment gateways, banking systems and financial service providers
+- Implements real-time stream processing for fraud detection and anomaly identification
+- Architects secure cloud-native financial data storage and analytics platforms
+- Develops automated reconciliation systems with intelligent exception handling

@@ -21,15 +21,19 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       case "image":
         return (
           <img 
-            src={typeof project.content === 'string' ? project.content : project.content.url} 
+            src={project.content}
             alt={project.title}
             className="w-full h-full object-cover"
           />
         );
       case "pdf":
-        return <PdfViewer url={typeof project.content === 'string' ? project.content : project.content.url} />;
+        return <PdfViewer url={project.content} />;
       case "slides":
-        return <SlideViewer slides={typeof project.content === 'string' ? [project.content] : project.content.slides} />;
+        // For slides, treat content as either a direct URL or a comma-separated list of URLs
+        const slideUrls = project.content.includes(',') 
+          ? project.content.split(',').map(url => url.trim())
+          : [project.content];
+        return <SlideViewer slides={slideUrls} />;
       case "text":
         return <CaseStudy project={project} />;
     }

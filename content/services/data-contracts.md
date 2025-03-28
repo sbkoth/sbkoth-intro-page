@@ -1,12 +1,12 @@
 ---
 title: Data Contracts
 icon: GitMerge
-description: Implement robust data contracts for reliable producer-consumer relationships and governance
+description: Implements robust data contracts for reliable producer-consumer relationships and governance
 ---
 
 # Data Contracts
 
-We establish clear, enforceable data contracts between producers and consumers to ensure reliable, consistent data exchange. Our services include:
+The consultant establishes clear, enforceable data contracts between producers and consumers to ensure reliable, consistent data exchange. Services include:
 
 - Financial transaction schema design and implementation
 - Avro schema design for payment, funding, and fee event types
