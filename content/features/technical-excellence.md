@@ -12,7 +12,7 @@ highlights:
 
 # Technical Leadership & Architecture
 
-I bring deep technical expertise across software architecture, data engineering, and system design with particular focus on financial technology systems, providing both strategic guidance and hands-on implementation capabilities.
+We bring deep technical expertise across software architecture, data engineering, and system design with particular focus on financial technology systems. Our team provides both strategic guidance and hands-on implementation capabilities, ensuring your organization benefits from cutting-edge technical approaches while maintaining enterprise-grade reliability and security.
 
 ## Enterprise Architecture
 

@@ -12,7 +12,7 @@ highlights:
 
 # Program & Project Management
 
-I bring extensive experience managing complex enterprise initiatives across financial services and technology sectors, with expertise in both strategic program leadership and tactical project execution.
+We bring decades of collective experience managing complex enterprise initiatives across financial services and technology sectors. Our team excels in both strategic program leadership and tactical project execution, ensuring your critical business initiatives are delivered on time, within budget, and with measurable business impact.
 
 ## Program Management Capabilities
 
