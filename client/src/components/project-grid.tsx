@@ -1,7 +1,6 @@
+import React, { useState } from "react";
 import type { Project } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
-import { useState } from "react";
 import ContentDialog from "./content-dialog";
 import { format } from "date-fns";
 
@@ -9,7 +8,7 @@ interface ProjectGridProps {
   projects: Project[];
 }
 
-export default function ProjectGrid({ projects }: ProjectGridProps) {
+function ProjectGridComponent({ projects }: ProjectGridProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
@@ -52,3 +51,6 @@ export default function ProjectGrid({ projects }: ProjectGridProps) {
     </>
   );
 }
+
+// Export a memoized version of the component to prevent unnecessary re-renders
+export default React.memo(ProjectGridComponent);

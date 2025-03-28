@@ -1,15 +1,14 @@
+import React, { useState } from "react";
 import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { BlogPost } from "@shared/schema";
-import { ArrowRight } from "lucide-react";
-import { useState } from "react";
 import ContentDialog from "./content-dialog";
 
 interface BlogSectionProps {
   posts: BlogPost[];
 }
 
-export default function BlogSection({ posts }: BlogSectionProps) {
+function BlogSectionComponent({ posts }: BlogSectionProps) {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
 
   return (
@@ -58,3 +57,6 @@ export default function BlogSection({ posts }: BlogSectionProps) {
     </>
   );
 }
+
+// Export a memoized version of the component to prevent unnecessary re-renders
+export default React.memo(BlogSectionComponent);

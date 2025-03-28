@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { 
   Card, 
@@ -18,7 +19,6 @@ import {
   Shield,
   CreditCard
 } from "lucide-react";
-import { useState } from "react";
 import type { Feature } from "../../../server/features-utils";
 import ContentDialog from "./content-dialog";
 
@@ -34,7 +34,7 @@ const iconMap: Record<string, React.ReactNode> = {
   CreditCard: <CreditCard className="h-8 w-8" />,
 };
 
-export default function Features() {
+function FeaturesComponent() {
   const { data: features } = useQuery<Feature[]>({
     queryKey: ["/api/features"],
   });
@@ -95,3 +95,6 @@ export default function Features() {
     </>
   );
 }
+
+// Export memoized component to prevent unnecessary re-renders
+export default React.memo(FeaturesComponent);

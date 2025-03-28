@@ -1,7 +1,7 @@
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Database, Cloud, Shield, Code, Brain, ChartBar, Server, Network, Bot, GitMerge, Cpu, Boxes, Waves, CreditCard, Activity } from "lucide-react";
-import { useState } from "react";
 import type { Service } from "../../../server/services-utils";
 import ContentDialog from "./content-dialog";
 import { SiKubernetes, SiApachekafka, SiStripe } from "react-icons/si";
@@ -26,7 +26,7 @@ const iconMap: Record<string, React.ReactNode> = {
   CreditCard: <CreditCard className="h-8 w-8" />,
 };
 
-export default function Services() {
+function ServicesComponent() {
   const { data: services } = useQuery<Service[]>({
     queryKey: ["/api/services"],
   });
@@ -75,3 +75,6 @@ export default function Services() {
     </>
   );
 }
+
+// Export a memoized version of the component to prevent unnecessary re-renders
+export default React.memo(ServicesComponent);
