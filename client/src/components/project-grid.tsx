@@ -24,18 +24,13 @@ export default function ProjectGrid({ projects }: ProjectGridProps) {
               onClick={() => setSelectedProject(project)}
             >
               <CardHeader className="space-y-1">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="group-hover:text-primary transition-colors">
-                      {project.title}
-                    </CardTitle>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {format(new Date(project.publishedAt), 'MMMM d, yyyy')}
-                    </p>
-                  </div>
-                  <div className="bg-primary/10 p-2 rounded-lg">
-                    <ArrowRight className="h-5 w-5 text-primary" />
-                  </div>
+                <div>
+                  <CardTitle className="group-hover:text-primary transition-colors">
+                    {project.title}
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {format(new Date(project.publishedAt), 'MMMM d, yyyy')}
+                  </p>
                 </div>
               </CardHeader>
               <CardContent>

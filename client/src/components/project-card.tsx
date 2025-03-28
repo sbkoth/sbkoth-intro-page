@@ -83,14 +83,11 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       <DialogTrigger asChild>
         <Card className="cursor-pointer group hover:shadow-lg transition-shadow border-t-4 border-t-primary">
           <CardHeader className="space-y-1">
-            <div className="flex justify-between items-start">
-              <div className="flex items-center gap-2">
-                <div className="text-primary bg-primary/10 p-2 rounded-lg">
-                  {getPrimaryTechIcon()}
-                </div>
-                <CardTitle>{project.title}</CardTitle>
+            <div className="flex items-center gap-2">
+              <div className="text-primary bg-primary/10 p-2 rounded-lg">
+                {getPrimaryTechIcon()}
               </div>
-              <ArrowRight className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+              <CardTitle>{project.title}</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
