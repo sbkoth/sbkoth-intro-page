@@ -33,46 +33,7 @@ export async function registerRoutes(app: Express) {
     res.json(projects);
   });
 
-  app.post("/api/projects", async (req, res) => {
-    try {
-      if (!req.files || !req.body.data) {
-        return res.status(400).json({ message: "Missing required files or data" });
-      }
-
-      const data = JSON.parse(req.body.data);
-      const thumbnailFile = req.files.thumbnail;
-
-      // Handle thumbnail upload
-      if (!Array.isArray(thumbnailFile) && thumbnailFile) {
-        const filename = `${Date.now()}-${thumbnailFile.name}`;
-        const filepath = path.join(UPLOAD_DIR, filename);
-        await thumbnailFile.mv(filepath);
-        data.thumbnail = `/uploads/${filename}`;
-      }
-
-      // Create the project
-      const project = await storage.createProject(data);
-      res.json(project);
-    } catch (error) {
-      console.error("Error creating project:", error);
-      res.status(500).json({ message: "Failed to create project" });
-    }
-  });
-
-  app.post("/api/profile/photo", async (req, res) => {
-    try {
-      const sourcePhotoPath = path.join(process.cwd(), "attached_assets", "sbk-profile-photo-small.jpg");
-      const targetFilename = `${Date.now()}-profile-photo.jpg`;
-      const targetPhotoPath = path.join(UPLOAD_DIR, targetFilename);
-
-      await fsPromises.copyFile(sourcePhotoPath, targetPhotoPath);
-      await storage.updateProfilePhoto(`/uploads/${targetFilename}`);
-      res.json({ url: `/uploads/${targetFilename}` });
-    } catch (error) {
-      console.error("Error uploading profile photo:", error);
-      res.status(500).json({ message: "Failed to upload photo" });
-    }
-  });
+  // Admin-related endpoints have been removed
 
   app.get("/api/blog-posts", async (_req, res) => {
     const posts = await storage.getBlogPosts();

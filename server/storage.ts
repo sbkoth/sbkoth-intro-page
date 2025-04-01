@@ -1,4 +1,4 @@
-import type { Project, Profile, InsertProject, BlogPost, InsertBlogPost, Feature } from "@shared/schema";
+import type { Project, Profile, BlogPost, InsertBlogPost, Feature } from "@shared/schema";
 import { projects, profile, blogPosts } from "@shared/schema";
 import { db } from "./db";
 import { loadBlogPosts } from "./blog-utils";
@@ -10,8 +10,6 @@ import { cacheService } from "./cache-service";
 export interface IStorage {
   getProfile(): Promise<Profile>;
   getProjects(): Promise<Project[]>;
-  createProject(project: InsertProject): Promise<Project>;
-  updateProfilePhoto(photoUrl: string): Promise<Profile>;
   getBlogPosts(): Promise<BlogPost[]>;
   getServices(): Promise<Service[]>;
   syncBlogPosts(): Promise<void>;
@@ -38,44 +36,7 @@ export class DatabaseStorage implements IStorage {
     return projectsData;
   }
 
-  async createProject(insertProject: InsertProject): Promise<Project> {
-    // Explicitly extract only the fields defined in the schema
-    const projectData = {
-      title: insertProject.title,
-      slug: insertProject.slug,
-      description: insertProject.description,
-      content: insertProject.content,
-      thumbnail: insertProject.thumbnail,
-      type: insertProject.type,
-      publishedAt: insertProject.publishedAt,
-      challenge: insertProject.challenge,
-      approach: insertProject.approach,
-      implementation: insertProject.implementation,
-      outcomes: insertProject.outcomes,
-      technologies: insertProject.technologies,
-    };
-    
-    // Insert as a single record (not an array)
-    const [project] = await db
-      .insert(projects)
-      .values(projectData)
-      .returning();
-
-    // Invalidate projects cache when new project is created
-    cacheService.invalidate('projects');
-    return project;
-  }
-
-  async updateProfilePhoto(photoUrl: string): Promise<Profile> {
-    const [updatedProfile] = await db
-      .update(profile)
-      .set({ avatar: photoUrl })
-      .returning();
-
-    // Invalidate profile cache when photo is updated
-    cacheService.invalidate('profile');
-    return updatedProfile;
-  }
+  // Admin-related methods have been removed
 
   async getBlogPosts(): Promise<BlogPost[]> {
     const cached = cacheService.get('blogPosts');
@@ -90,7 +51,7 @@ export class DatabaseStorage implements IStorage {
     const posts = await loadBlogPosts();
     await db.delete(blogPosts);
     if (posts.length > 0) {
-      // Insert posts one by one with properly typed fields
+      // Process and insert blog posts one by one
       for (const post of posts) {
         await db.insert(blogPosts).values({
           title: post.title,
@@ -110,7 +71,7 @@ export class DatabaseStorage implements IStorage {
     const projectsList = await loadProjects();
     await db.delete(projects);
     if (projectsList.length > 0) {
-      // Insert projects one by one with properly typed fields
+      // Process and insert projects one by one
       for (const project of projectsList) {
         await db.insert(projects).values({
           title: project.title,

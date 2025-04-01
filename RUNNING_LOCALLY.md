@@ -102,7 +102,7 @@ The portfolio website consists of the following main sections:
 5. **Blog** - Professional articles and publications (from `blog` content)
 6. **Contact** - Contact information and social links
 
-Note: The application intentionally doesn't include Process or Testimonials sections as they've been removed from the design for a more streamlined user experience.
+Note: The application intentionally doesn't include Process or Testimonials sections as they've been removed from the design for a more streamlined user experience. Additionally, there is no admin interface as content is managed through Markdown files.
 
 ### 7. Starting the Application
 
