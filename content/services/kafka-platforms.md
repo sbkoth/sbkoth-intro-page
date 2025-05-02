@@ -8,12 +8,13 @@ description: We deliver end-to-end Kafka platform implementation with advanced s
 
 We specialize in designing, implementing, and optimizing Kafka-based stream processing platforms that enable real-time data processing at scale. Our services include:
 
-- Confluent Platform architecture and deployment
-- Multi-datacenter Kafka cluster design and implementation
+- Enterprise Stream Data Platform implementation on AWS, Google Cloud, and corporate datacenters
+- Multi-datacenter Kafka cluster design and implementation with 99.9% uptime
+- Kafka Streams applications development for real-time analytics and event-driven architecture
+- Schema Registry management across multi-datacenter clusters
+- Stream data security, disaster recovery, and business continuity planning
 - Kafka Connect framework configuration for database integration
 - KSQL implementation for SQL-based stream processing
-- Schema Registry setup for Avro schema management
-- Kafka REST Proxy configuration for HTTP-based access
 - Stream processing workflow design and implementation
 - Change Data Capture (CDC) pipeline configuration
 - Performance tuning for high-throughput Kafka clusters
@@ -21,7 +22,6 @@ We specialize in designing, implementing, and optimizing Kafka-based stream proc
 - Topic naming conventions and governance establishment
 - Kafka client application debugging and optimization
 - Monitoring implementation with JMX metrics and Prometheus
-- Stream processing with exactly-once semantics
-- Data pipeline design for Oracle, Teradata, and cloud databases
+- Infrastructure automation using Terraform, Ansible, and Kubernetes
 - Zero-downtime platform upgrades and maintenance
-- Cloud-native Kafka deployment on AWS and GCP
+- Cloud-native Kafka deployment across AWS, Google Cloud, and Azure

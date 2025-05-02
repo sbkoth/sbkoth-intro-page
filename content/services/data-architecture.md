@@ -8,17 +8,17 @@ description: We design and implement scalable data solutions, from warehouses to
 
 Our data architecture services focus on building robust, scalable data infrastructure that serves business needs. We specialize in:
 
-- Data warehouse design and optimization
-- Data lake implementation
+- End-to-end platform governance frameworks with quality, security, and compliance controls
+- Reverse ETL pipelines that sync data from warehouses to marketing and sales tools
+- Data platform usability enhancements with self-service capabilities
+- Data mesh architecture implementation
+- Data integration and synchronization using Apache NiFi
 - ETL/ELT pipeline development
 - Data modeling and schema design
-- Performance tuning and optimization
-- Data governance implementation
-- Data mesh architecture implementation
+- Performance tuning and optimization for high-throughput systems
+- User-friendly interfaces for non-technical users
 - Lakehouse architecture design
 - Master data management solutions
 - Real-time data processing architectures
-- Data catalog implementation
-- BigQuery and Snowflake optimization
-- Cloud-native data architecture
+- Cloud-native data architecture across AWS, Google Cloud, and Azure
 - Data security and compliance frameworks

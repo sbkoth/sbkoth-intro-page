@@ -6,20 +6,20 @@ description: We implement and scale SRE practices to build highly reliable and r
 
 # Site Reliability Engineering
 
-Downtime isn't just an inconvenience—it's a business crisis. Drawing on Google's proven SRE methodology, our team transforms traditional operations into a data-driven reliability practice focused on customer experience. By balancing feature velocity with system stability through error budgets and automation, we elevate reliability from an aspiration to a measurable engineering discipline. Our comprehensive SRE services include:
+Downtime isn't just an inconvenience—it's a business crisis. Drawing on proven SRE methodology, our team transforms traditional operations into a data-driven reliability practice focused on customer experience. By balancing feature velocity with system stability through automation, we elevate reliability from an aspiration to a measurable engineering discipline. Our comprehensive SRE services include:
 
-- SRE team structure and practice implementation
-- Error budget definition and SLO/SLI framework design
+- Platform operations management achieving 99.9% uptime
+- Monitoring, performance tuning, and incident response systems
+- SLO/SLI framework design and implementation
 - Capacity planning and demand forecasting
 - Production readiness reviews and launch coordination
-- Incident management and postmortem processes
-- Chaos engineering and resilience testing
+- Incident management and resolution processes
+- High-availability system architecture
 - Automated remediation systems
-- On-call process design and toil reduction
-- Reliability centered design principles
-- Critical system failure analysis
-- Performance optimization frameworks
+- Infrastructure telemetry implementation
+- Performance optimization for large-scale systems
+- Real-time data ingestion and analysis with Kafka and Elasticsearch
 - Distributed systems reliability engineering
-- SRE culture and knowledge sharing programs
-- Latency and error budget management
-- SRE implementation for AI/ML systems
+- Disaster recovery and business continuity planning
+- Security implementation with proper authentication and authorization
+- Operational excellence and continuous improvement frameworks
