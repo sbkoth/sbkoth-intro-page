@@ -38,29 +38,28 @@ export class DatabaseStorage implements IStorage {
   async syncProjects(): Promise<void> {
     const projectsList = await loadProjects();
     await db.delete(projects);
+    
     if (projectsList.length > 0) {
-      // Prepare all project data for batch insert
-      const projectsData = projectsList.map(project => ({
-        slug: project.slug,
-        title: project.title,
-        description: project.description,
-        content: project.content,
-        publishedAt: project.publishedAt ? new Date(project.publishedAt) : new Date(),
-        thumbnail: project.thumbnail,
-        type: project.type as "image" | "pdf" | "slides" | "text",
-        challenge: project.challenge || null,
-        approach: project.approach || null,
-        implementation: project.implementation || null,
-        outcomes: project.outcomes || [],
-        clientTestimonial: project.clientTestimonial || null,
-        technologies: project.technologies || []
-      }));
-      
-      // Insert all projects one by one to ensure type safety
-      for (const projectData of projectsData) {
-        await db.insert(projects).values(projectData);
+      // Insert projects one by one to avoid type issues
+      for (const project of projectsList) {
+        await db.insert(projects).values({
+          slug: project.slug,
+          title: project.title,
+          description: project.description,
+          content: project.content,
+          publishedAt: project.publishedAt ? new Date(project.publishedAt) : new Date(),
+          thumbnail: project.thumbnail,
+          type: project.type as "image" | "pdf" | "slides" | "text",
+          challenge: project.challenge || null,
+          approach: project.approach || null,
+          implementation: project.implementation || null,
+          outcomes: project.outcomes || [],
+          clientTestimonial: project.clientTestimonial || null,
+          technologies: project.technologies || []
+        });
       }
     }
+    
     // Invalidate projects cache after sync
     cacheService.invalidate('projects');
   }

@@ -35,6 +35,12 @@ export async function loadProjects(): Promise<InsertProject[]> {
       publishedAt: new Date(data.publishedAt || Date.now()),
       thumbnail: data.thumbnail || "/placeholder.jpg",
       type: data.type || "text",
+      challenge: data.challenge || null,
+      approach: data.approach || null,
+      implementation: data.implementation || null,
+      outcomes: data.outcomes || [],
+      clientTestimonial: data.clientTestimonial || null,
+      technologies: data.technologies || [],
     });
   }
 
