@@ -17,25 +17,64 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const [open, setOpen] = useState(false);
 
   const renderContent = () => {
-    switch (project.type) {
-      case "image":
-        return (
-          <img 
-            src={project.content}
-            alt={project.title}
-            className="w-full h-full object-cover"
-          />
-        );
-      case "pdf":
-        return <PdfViewer url={project.content} />;
-      case "slides":
-        // For slides, treat content as either a direct URL or a comma-separated list of URLs
-        const slideUrls = project.content.includes(',') 
-          ? project.content.split(',').map(url => url.trim())
-          : [project.content];
-        return <SlideViewer slides={slideUrls} />;
-      case "text":
-        return <CaseStudy project={project} />;
+    try {
+      switch (project.type) {
+        case "image":
+          return (
+            <img 
+              src={project.content}
+              alt={project.title}
+              className="w-full h-full object-cover"
+            />
+          );
+        case "pdf":
+          // Make sure PDF URL is valid
+          if (!project.content || !project.content.trim()) {
+            return (
+              <div className="p-6 text-center text-muted-foreground">
+                <p>PDF content not available.</p>
+              </div>
+            );
+          }
+          return <PdfViewer url={project.content} />;
+        case "slides":
+          // For slides, treat content as either a direct URL or a comma-separated list of URLs
+          if (!project.content || !project.content.trim()) {
+            return (
+              <div className="p-6 text-center text-muted-foreground">
+                <p>Slide content not available.</p>
+              </div>
+            );
+          }
+          const slideUrls = project.content.includes(',') 
+            ? project.content.split(',').map(url => url.trim())
+            : [project.content];
+          return <SlideViewer slides={slideUrls} />;
+        case "text":
+          // Make sure we have a valid project with content
+          if (!project.content) {
+            return (
+              <div className="p-6 text-center text-muted-foreground">
+                <p>Project content not available.</p>
+              </div>
+            );
+          }
+          return <CaseStudy project={project} />;
+        default:
+          // Fallback for any other types
+          return (
+            <div className="prose dark:prose-invert mt-4 max-w-none prose-p:text-foreground/90 prose-p:leading-relaxed">
+              <div dangerouslySetInnerHTML={{ __html: project.content || 'Content not available' }} />
+            </div>
+          );
+      }
+    } catch (error) {
+      console.error('Error rendering project content:', error);
+      return (
+        <div className="p-6 text-center text-muted-foreground">
+          <p>There was an error displaying this content.</p>
+        </div>
+      );
     }
   };
 
