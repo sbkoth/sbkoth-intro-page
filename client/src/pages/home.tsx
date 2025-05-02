@@ -5,8 +5,9 @@ import Services from "@/components/services";
 import ProjectGrid from "@/components/project-grid";
 import Contact from "@/components/contact";
 import Features from "@/components/features";
+import BlogSection from "@/components/blog-section";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Profile, Project } from "@shared/schema";
+import type { Profile, Project, BlogPost } from "@shared/schema";
 
 // Loading skeleton component
 const LoadingSkeleton = () => (
@@ -27,8 +28,12 @@ export default function Home() {
   const { data: projects, isError: projectsError } = useQuery<Project[]>({
     queryKey: ["/api/projects"]
   });
+  
+  const { data: blogPosts, isError: blogError } = useQuery<BlogPost[]>({
+    queryKey: ["/api/blog-posts"]
+  });
 
-  if (profileError || projectsError) {
+  if (profileError || projectsError || blogError) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-destructive">Failed to load content. Please try again later.</p>
@@ -36,7 +41,7 @@ export default function Home() {
     );
   }
 
-  if (!profile || !projects) {
+  if (!profile || !projects || !blogPosts) {
     return <LoadingSkeleton />;
   }
 
