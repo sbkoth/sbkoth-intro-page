@@ -135,29 +135,7 @@ Detailed project description in Markdown format.
   - Technologies used
   - Full content in Markdown
 
-#### 4. Blog Post Cards
 
-Blog post cards feature your articles and thought leadership content.
-
-**File Location**: `content/blogs/your-post-slug.md`
-
-**Required Frontmatter**:
-```md
----
-title: Blog Post Title
-excerpt: A brief excerpt or summary (1-2 sentences)
-thumbnail: /path/to/thumbnail.jpg
-publishedAt: 2023-02-20
----
-
-Blog post content in Markdown format.
-```
-
-**Component Structure**:
-- Card with thumbnail image
-- Title and excerpt
-- Publication date
-- Clicking opens the full blog post
 
 ### Card Component Implementation Details
 
@@ -308,7 +286,6 @@ The application will be available at `http://localhost:5000`.
 │   │   ├── lib/        # Utility functions
 │   │   └── pages/      # Page components
 ├── content/             # Markdown content
-│   ├── blogs/          # Blog posts
 │   ├── features/       # Feature descriptions
 │   ├── services/       # Service offerings
 │   └── projects/       # Project showcases

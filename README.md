@@ -1,39 +1,8 @@
 # Portfolio Website with Content Management
 
-A modern portfolio website featuring dynamic content management for projects and blog posts. The content is managed through markdown files, making it easy to add or modify content without changing the code.
+A modern portfolio website featuring dynamic content management for projects and professional expertise. The content is managed through markdown files, making it easy to add or modify content without changing the code.
 
 ## Adding Content
-
-### Blog Posts
-
-To add a new blog post:
-
-1. Create a new markdown file in `content/blogs` directory (e.g., `my-post.md`)
-2. Add the required frontmatter at the top of the file:
-   ```markdown
-   ---
-   title: Your Blog Post Title
-   excerpt: A brief summary of your post
-   publishedAt: YYYY-MM-DD
-   thumbnail: /uploads/your-thumbnail.jpg
-   ---
-   ```
-3. Write your blog content in markdown format below the frontmatter
-4. Restart the application to see your changes
-
-Example blog post structure:
-```markdown
----
-title: Welcome to My Blog
-excerpt: This is my first blog post about technology
-publishedAt: 2024-02-21
-thumbnail: /uploads/blog-thumbnail.jpg
----
-
-# Welcome to My Technical Blog
-
-This is the main content of your blog post...
-```
 
 ### Projects
 
@@ -80,12 +49,15 @@ This project delivered a comprehensive cloud migration...
 
 ```
 content/
-├── blogs/
-│   ├── welcome.md
-│   └── [your-blog-posts].md
-└── projects/
-    ├── example-project.md
-    └── [your-projects].md
+├── projects/
+│   ├── example-project.md
+│   └── [your-projects].md
+├── features/
+│   ├── expertise-category.md
+│   └── [your-expertise-categories].md
+└── services/
+    ├── service-name.md
+    └── [your-services].md
 ```
 
 ## Images and Files
