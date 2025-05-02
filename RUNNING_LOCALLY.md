@@ -129,7 +129,7 @@ The application will be available at `http://localhost:5000`.
   - `src/hooks/` - Custom React hooks
   - `src/lib/` - Utility functions and configuration
 - `server/` - Express backend
-  - `*-utils.ts` - Content loading utilities for features, services, blog posts, and projects
+  - `*-utils.ts` - Content loading utilities for features, services, and projects
   - `storage.ts` - Database interface with caching
   - `routes.ts` - API endpoints
   - `db.ts` - Database connection
@@ -272,7 +272,6 @@ Then explore the tables:
 \dt                           -- list all tables
 SELECT * FROM profile;        -- view profile information
 SELECT * FROM projects;       -- view projects
-SELECT * FROM blog_posts;     -- view blog posts
 ```
 
 ### Database Migrations
@@ -332,10 +331,9 @@ The application includes several performance optimizations:
 
 Key components have been memoized using React.memo to prevent unnecessary re-renders:
 
-1. **BlogSection** - Optimized to only re-render when blog posts change
-2. **Features** - Memoized to avoid re-rendering when other parts of the app update
-3. **ProjectGrid** - Optimized for efficient rendering of project cards
-4. **Services** - Memoized to improve performance for service card rendering
+1. **Features** - Memoized to avoid re-rendering when other parts of the app update
+2. **ProjectGrid** - Optimized for efficient rendering of project cards
+3. **Services** - Memoized to improve performance for service card rendering
 
 These optimizations help reduce the rendering workload, especially for complex components with many child elements.
 
@@ -361,7 +359,7 @@ The application uses Tailwind CSS with the shadcn/ui component library. To custo
 
 #### Card Styling Consistency
 
-All cards across the website (service cards, project cards, blog cards, feature cards) follow a consistent visual style:
+All cards across the website (service cards, project cards, feature cards) follow a consistent visual style:
 
 1. **Top Border Styling**: Each card has a `border-t-4 border-t-primary` class that creates the distinctive "black fade" border-top effect
 2. **Hover Effects**: Consistent hover animations with subtle scaling (`hover:scale-[1.02]`) and shadow effects (`hover:shadow-lg`)

@@ -39,27 +39,25 @@ export class DatabaseStorage implements IStorage {
     const projectsList = await loadProjects();
     await db.delete(projects);
     if (projectsList.length > 0) {
-      // Process and insert projects one by one
-      for (const project of projectsList) {
-        // Prepare the data with proper type handling
-        const projectData = {
-          slug: project.slug,
-          title: project.title,
-          description: project.description,
-          content: project.content,
-          publishedAt: project.publishedAt ? new Date(project.publishedAt) : new Date(),
-          thumbnail: project.thumbnail,
-          type: project.type as "image" | "pdf" | "slides" | "text",
-          challenge: project.challenge || null,
-          approach: project.approach || null,
-          implementation: project.implementation || null,
-          outcomes: project.outcomes || [],
-          clientTestimonial: project.clientTestimonial || null,
-          technologies: project.technologies || []
-        };
-        
-        await db.insert(projects).values(projectData);
-      }
+      // Prepare all project data for batch insert
+      const projectsData = projectsList.map(project => ({
+        slug: project.slug,
+        title: project.title,
+        description: project.description,
+        content: project.content,
+        publishedAt: project.publishedAt ? new Date(project.publishedAt) : new Date(),
+        thumbnail: project.thumbnail,
+        type: project.type as "image" | "pdf" | "slides" | "text",
+        challenge: project.challenge || null,
+        approach: project.approach || null,
+        implementation: project.implementation || null,
+        outcomes: project.outcomes || [],
+        clientTestimonial: project.clientTestimonial || null,
+        technologies: project.technologies || []
+      }));
+      
+      // Insert all projects in a single batch
+      await db.insert(projects).values(projectsData);
     }
     // Invalidate projects cache after sync
     cacheService.invalidate('projects');
