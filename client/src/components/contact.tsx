@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { FaGithub } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import type { Profile } from "@shared/schema";
+import TerminalPanel from "./terminal-panel";
 
 interface ContactProps {
   profile: Profile;
@@ -12,35 +12,54 @@ export default function Contact({ profile }: ContactProps) {
   const links = [
     {
       href: socials.github,
-      label: "GitHub",
-      icon: <FaGithub className="h-5 w-5" />,
+      label: "github",
+      icon: <FaGithub className="h-4 w-4" />,
+      cmd: "open github",
     },
     {
       href: socials.email ? `mailto:${socials.email}` : undefined,
-      label: "Email",
-      icon: <MdEmail className="h-5 w-5" />,
+      label: "email",
+      icon: <MdEmail className="h-4 w-4" />,
+      cmd: `mail ${socials.email ?? ""}`,
     },
   ].filter((l) => Boolean(l.href));
 
   return (
-    <div className="container mx-auto px-4 py-16 text-center">
-      <h2 className="text-3xl font-bold mb-8">Get in Touch</h2>
-      <div className="flex justify-center gap-4">
+    <TerminalPanel title="~/contact" prompt="contact --list">
+      <div className="mb-6">
+        <h2 className="tui-section-title">Get in Touch</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Prefer async channels — pick a pipe below.
+        </p>
+      </div>
+      <ul className="space-y-2">
         {links.map((link) => (
-          <Button key={link.label} variant="outline" size="icon" asChild>
+          <li key={link.label}>
             <a
               href={link.href}
               target={link.href?.startsWith("mailto:") ? undefined : "_blank"}
               rel={
-                link.href?.startsWith("mailto:") ? undefined : "noopener noreferrer"
+                link.href?.startsWith("mailto:")
+                  ? undefined
+                  : "noopener noreferrer"
               }
+              className="tui-card flex items-center gap-3 px-4 py-3 no-underline text-foreground hover:text-primary"
               aria-label={link.label}
             >
-              {link.icon}
+              <span className="text-primary border border-primary/30 p-2">
+                {link.icon}
+              </span>
+              <span className="text-sm">
+                <span className="text-muted-foreground">$ </span>
+                {link.cmd}
+              </span>
+              <span className="ml-auto text-[10px] uppercase tracking-wider text-accent/70">
+                exec
+              </span>
             </a>
-          </Button>
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </TerminalPanel>
   );
 }

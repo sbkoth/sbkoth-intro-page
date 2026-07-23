@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import type { Project } from "@shared/schema";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ContentDialog from "./content-dialog";
 import { format, isValid } from "date-fns";
+import TerminalPanel from "./terminal-panel";
 
 interface ProjectGridProps {
   projects: Project[];
@@ -11,7 +11,7 @@ interface ProjectGridProps {
 function formatPublishedAt(value: string | Date): string | null {
   const date = value instanceof Date ? value : new Date(value);
   if (!isValid(date) || date.getTime() === 0) return null;
-  return format(date, "MMMM d, yyyy");
+  return format(date, "yyyy-MM-dd");
 }
 
 function ProjectGridComponent({ projects }: ProjectGridProps) {
@@ -19,48 +19,63 @@ function ProjectGridComponent({ projects }: ProjectGridProps) {
 
   if (!projects.length) {
     return (
-      <div className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold mb-8">Projects</h2>
-        <p className="text-muted-foreground">Projects will appear here soon.</p>
-      </div>
+      <TerminalPanel title="~/projects" prompt="ls projects/">
+        <p className="text-muted-foreground text-sm">
+          # projects will appear here soon
+        </p>
+      </TerminalPanel>
     );
   }
 
   return (
     <>
-      <div className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold mb-8">Projects</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <TerminalPanel title="~/projects" prompt="git log --oneline --projects">
+        <div className="mb-6">
+          <h2 className="tui-section-title">Projects</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            <span className="text-primary">{projects.length}</span> entries in tree
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
           {projects.map((project) => {
             const dateLabel = formatPublishedAt(project.publishedAt);
             return (
-              <Card
+              <article
                 key={project.id ?? project.slug}
-                className="group hover:shadow-lg transition-all cursor-pointer hover:scale-[1.02] border-t-4 border-t-primary"
+                className="tui-card p-4 group"
                 onClick={() => setSelectedProject(project)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelectedProject(project);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
               >
-                <CardHeader className="space-y-1">
-                  <div>
-                    <CardTitle className="group-hover:text-primary transition-colors">
-                      {project.title}
-                    </CardTitle>
-                    {dateLabel && (
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {dateLabel}
-                      </p>
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground line-clamp-3">
-                    {project.description}
-                  </p>
-                </CardContent>
-              </Card>
+                <div className="flex items-baseline justify-between gap-2">
+                  <h3 className="text-sm font-semibold text-primary group-hover:text-accent transition-colors">
+                    <span className="text-muted-foreground font-normal">*</span>{" "}
+                    {project.title}
+                  </h3>
+                  {dateLabel && (
+                    <time className="text-[10px] text-muted-foreground shrink-0 font-mono">
+                      {dateLabel}
+                    </time>
+                  )}
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+                  {project.description}
+                </p>
+                <p className="mt-3 text-[10px] text-accent/80">
+                  <span className="text-muted-foreground">slug=</span>
+                  {project.slug}
+                </p>
+              </article>
             );
           })}
         </div>
-      </div>
+      </TerminalPanel>
 
       {selectedProject && (
         <ContentDialog

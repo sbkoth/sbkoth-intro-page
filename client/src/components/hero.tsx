@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import type { Profile } from "@shared/schema";
 import { assetUrl } from "@/lib/static-data";
+import TerminalPanel from "./terminal-panel";
 
 interface HeroProps {
   profile: Profile;
@@ -13,12 +14,11 @@ export default function Hero({ profile }: HeroProps) {
   useEffect(() => {
     const initCalendar = () => {
       if (calendarButtonRef.current && window.calendar?.schedulingButton) {
-        // Avoid double-injecting the calendar button on re-renders
         if (calendarButtonRef.current.childElementCount > 0) return;
         window.calendar.schedulingButton.load({
           url: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ3jn57Z8GRePdNpJDHhz1kInTrYIl_KwK6RYDkBOp6eWZ1BIIiFnG-sNf1oPI4RPgwFDsTD69dZ?gv=true",
-          color: "#0066cc",
-          label: "Schedule a Consultation",
+          color: "#22c55e",
+          label: "schedule --consultation",
           target: calendarButtonRef.current,
         });
       }
@@ -28,7 +28,6 @@ export default function Hero({ profile }: HeroProps) {
       initCalendar();
     } else {
       window.addEventListener("load", initCalendar);
-      // Script is async — also poll briefly in case load already fired
       const t = window.setInterval(() => {
         if (window.calendar?.schedulingButton) {
           initCalendar();
@@ -56,32 +55,42 @@ export default function Hero({ profile }: HeroProps) {
     .toUpperCase();
 
   return (
-    <div className="container mx-auto px-4 py-24 md:py-32">
-      <div className="flex flex-col md:flex-row items-center gap-8">
-        <Avatar className="w-32 h-32 md:w-48 md:h-48">
+    <TerminalPanel title="~/whoami" prompt="whoami --verbose">
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8">
+        <Avatar className="w-24 h-24 md:w-32 md:h-32 rounded-none border border-primary/40">
           <AvatarImage
             src={assetUrl(profile.avatar)}
             alt={profile.name}
-            className="object-cover"
+            className="object-cover rounded-none"
           />
-          <AvatarFallback className="text-2xl">{initials}</AvatarFallback>
+          <AvatarFallback className="text-xl rounded-none bg-muted text-primary font-mono">
+            {initials}
+          </AvatarFallback>
         </Avatar>
-        <div className="text-center md:text-left">
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+        <div className="min-w-0 flex-1 space-y-3">
+          <p className="text-xs text-muted-foreground">
+            <span className="text-accent">#</span> identity
+          </p>
+          <h1 className="text-2xl md:text-4xl font-semibold text-primary tracking-tight break-words">
             {profile.name}
+            <span className="tui-blink ml-1 inline-block h-6 w-2.5 bg-primary align-middle" />
           </h1>
-          <h2 className="text-xl md:text-2xl text-muted-foreground mt-2">
+          <h2 className="text-sm md:text-base text-accent">
+            <span className="text-muted-foreground">role=</span>
             {profile.title}
           </h2>
-          <p className="mt-4 max-w-xl text-lg text-foreground/80">
+          <p className="text-sm md:text-[15px] leading-relaxed text-foreground/90 max-w-2xl border-l-2 border-primary/40 pl-3">
             {profile.bio}
           </p>
-          <div className="mt-8 flex justify-center md:justify-start">
-            <div ref={calendarButtonRef} className="inline-block" />
+          <div className="pt-2 flex flex-wrap items-center gap-3">
+            <span className="text-xs text-muted-foreground">
+              $ schedule --consultation
+            </span>
+            <div ref={calendarButtonRef} className="inline-block [&_button]:!font-mono [&_button]:!rounded-none" />
           </div>
         </div>
       </div>
-    </div>
+    </TerminalPanel>
   );
 }
 
