@@ -77,6 +77,24 @@ function padCmd(cmd: string, width = 12): string {
   return cmd + " ".repeat(Math.max(1, width - cmd.length));
 }
 
+/**
+ * Help menu lines derived from the command registry.
+ * Shared by `help`, the welcome intro, and screen-reader announcements.
+ * Function declaration so handlers defined above in COMMAND_REGISTRY can call it at runtime.
+ */
+export function formatHelpMenuLines(
+  commands: ReadonlyArray<{ cmd: string; desc: string }>,
+): string[] {
+  return [
+    ...commands.map((c) => `${padCmd(c.cmd)}- ${c.desc}`),
+    "",
+    "Tab or Ctrl + i  => autocompletes the command",
+    "Up Arrow         => go back to previous command",
+    "Down Arrow       => go forward in history",
+    "Ctrl + l         => clear the terminal",
+  ];
+}
+
 export { welcomeBannerLines as welcomeLines } from "./welcome-art";
 
 function socialEntries(data: PortfolioData): Array<{ label: string; url: string }> {
@@ -169,14 +187,7 @@ export const COMMAND_REGISTRY: readonly CommandDefinition[] = [
     cmd: "help",
     desc: "check available commands",
     handler: () => ({
-      lines: [
-        ...COMMAND_REGISTRY.map((c) => `${padCmd(c.cmd)}- ${c.desc}`),
-        "",
-        "Tab or Ctrl + i  => autocompletes the command",
-        "Up Arrow         => go back to previous command",
-        "Down Arrow       => go forward in history",
-        "Ctrl + l         => clear the terminal",
-      ],
+      lines: formatHelpMenuLines(COMMAND_REGISTRY),
     }),
   },
   {
@@ -316,7 +327,12 @@ export const COMMAND_REGISTRY: readonly CommandDefinition[] = [
     cmd: "welcome",
     desc: "display hero section",
     handler: ({ data }) => ({
-      lines: welcomeBannerLines(data.profile.name),
+      lines: [
+        ...welcomeBannerLines(data.profile.name),
+        "",
+        "Available commands:",
+        ...formatHelpMenuLines(COMMAND_REGISTRY),
+      ],
       variant: "welcome",
       welcomeName: data.profile.name,
     }),

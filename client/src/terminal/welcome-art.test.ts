@@ -42,15 +42,17 @@ describe("welcome art (shipped)", () => {
   it("welcomeBannerLines includes name and side-by-side art", () => {
     const lines = welcomeBannerLines("Srinivas Kothapalli");
     assert.ok(lines.some((l) => l.includes("Srinivas")));
-    assert.ok(lines.some((l) => l.includes("help")));
+    assert.ok(lines.some((l) => /Available commands|help/i.test(l)));
     const wide = lines.find((l) => l.length > SBKOTH_LOGO[0].length + 5);
     assert.ok(wide, "expected side-by-side art line");
   });
 
-  it("WelcomeBanner source has no photo/img avatar", () => {
+  it("WelcomeBanner source has no photo/img avatar and embeds help menu", () => {
     const banner = fs.readFileSync(path.join(__dirname, "WelcomeBanner.tsx"), "utf-8");
     assert.doesNotMatch(banner, /<img|welcome-photo|avatar|assetUrl/);
     assert.match(banner, /PORTRAIT_ART/);
     assert.match(banner, /SBKOTH_LOGO/);
+    assert.match(banner, /COMMANDS|welcome-help/);
+    assert.match(banner, /Available commands/);
   });
 });

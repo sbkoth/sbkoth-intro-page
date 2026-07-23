@@ -70,6 +70,17 @@ describe("dispatchCommand (shipped)", () => {
     assert.ok(r.lines.some((l) => l.includes("Srinivas")));
   });
 
+  it("welcome includes the full help menu on intro", () => {
+    const r = dispatchCommand("welcome", data, [], themes);
+    const text = r.lines.join("\n");
+    assert.equal(r.variant, "welcome");
+    assert.match(text, /Available commands/i);
+    for (const cmd of ["about", "projects", "services", "themes", "help", "email"]) {
+      assert.match(text, new RegExp(`\\b${cmd}\\b`));
+    }
+    assert.match(text, /Tab or Ctrl/i);
+  });
+
   it("about returns profile bio", () => {
     const r = dispatchCommand("about", data, [], themes);
     assert.ok(r.lines.some((l) => l.includes("Bio line")));

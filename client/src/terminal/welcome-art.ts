@@ -76,7 +76,7 @@ export function welcomeBannerLines(name: string): string[] {
     "",
     `  Welcome to ${name}'s terminal portfolio.`,
     "  ----",
-    "  Type `help` for available commands.",
+    "  Available commands are listed below (or type `help` anytime).",
     "  Tab / Ctrl+I autocomplete · ↑/↓ history · Ctrl+L clear",
     "  ----",
     "",

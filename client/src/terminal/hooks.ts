@@ -291,7 +291,12 @@ export function useLatestOutputAnnouncement(entries: HistoryEntry[]): string {
     const last = entries[entries.length - 1];
     if (!last) return "";
     if (last.result.variant === "welcome") {
-      return `Welcome banner for ${last.result.welcomeName ?? "visitor"}`;
+      const name = last.result.welcomeName ?? "visitor";
+      // Prefer full welcome lines (includes help menu) when present.
+      if (last.result.lines.length > 0) {
+        return last.result.lines.join("\n");
+      }
+      return `Welcome to ${name}'s terminal portfolio. Commands: ${COMMAND_NAMES.join(", ")}.`;
     }
     return last.result.lines.join("\n");
   }, [entries]);

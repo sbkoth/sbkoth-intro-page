@@ -1,3 +1,4 @@
+import { COMMANDS } from "./commands";
 import { PORTRAIT_ART, SBKOTH_LOGO, SBKOTH_LOGO_MOBILE } from "./welcome-art";
 
 type Props = {
@@ -5,7 +6,8 @@ type Props = {
 };
 
 /**
- * Hero for `welcome`: wordmark left, terminal portrait art only (no photo).
+ * Hero for `welcome`: wordmark left, terminal portrait art only (no photo),
+ * plus the full help menu so visitors need not type `help` first.
  */
 export default function WelcomeBanner({ name }: Props) {
   return (
@@ -29,10 +31,20 @@ export default function WelcomeBanner({ name }: Props) {
       <div className="welcome-copy">
         <div>Welcome to {name}&apos;s terminal portfolio.</div>
         <div className="welcome-sep">----</div>
-        <div>
-          Type <span className="welcome-cmd">help</span> for available commands.
+        <div className="welcome-help" data-testid="welcome-help">
+          <div className="welcome-help-title">Available commands</div>
+          <ul className="welcome-help-list">
+            {COMMANDS.map((c) => (
+              <li key={c.cmd} className="welcome-help-line">
+                <span className="welcome-cmd">{c.cmd}</span>
+                <span className="welcome-help-desc">— {c.desc}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <div className="welcome-keys">Tab / Ctrl+I autocomplete · ↑/↓ history · Ctrl+L clear</div>
+        <div className="welcome-keys">
+          Tab / Ctrl+I autocomplete · ↑/↓ history · Ctrl+L clear
+        </div>
         <div className="welcome-sep">----</div>
       </div>
     </div>
