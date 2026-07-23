@@ -1,44 +1,46 @@
-import { pgTable, text, serial, jsonb, timestamp } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const profile = pgTable("profile", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  title: text("title").notNull(),
-  bio: text("bio").notNull(),
-  avatar: text("avatar").notNull(),
-  socials: jsonb("socials").$type<{
-    github?: string;
-    linkedin?: string;
-    twitter?: string;
-    email: string;
-  }>().notNull(),
+export const socialsSchema = z.object({
+  github: z.string().optional(),
+  linkedin: z.string().optional(),
+  twitter: z.string().optional(),
+  email: z.string(),
 });
 
-export const projects = pgTable("projects", {
-  id: serial("id").primaryKey(),
-  slug: text("slug").notNull().unique(),
-  title: text("title").notNull(),
-  description: text("description").notNull(),
-  content: text("content").notNull(),
-  publishedAt: timestamp("published_at").notNull().defaultNow(),
-  thumbnail: text("thumbnail").notNull(),
-  type: text("type", { enum: ["image", "pdf", "slides", "text"] }).notNull(),
-  challenge: text("challenge"),
-  approach: text("approach"),
-  implementation: text("implementation"),
-  outcomes: jsonb("outcomes").$type<string[]>(),
-  clientTestimonial: jsonb("client_testimonial").$type<{
-    quote: string;
-    author: string;
-    role: string;
-    company: string;
-  }>(),
-  technologies: jsonb("technologies").$type<string[]>(),
+export const profileSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  title: z.string(),
+  bio: z.string(),
+  avatar: z.string(),
+  socials: socialsSchema,
 });
 
-// Feature schema
+export const projectSchema = z.object({
+  id: z.number(),
+  slug: z.string(),
+  title: z.string(),
+  description: z.string(),
+  content: z.string(),
+  publishedAt: z.union([z.string(), z.date()]),
+  thumbnail: z.string(),
+  type: z.enum(["image", "pdf", "slides", "text"]),
+  challenge: z.string().nullable().optional(),
+  approach: z.string().nullable().optional(),
+  implementation: z.string().nullable().optional(),
+  outcomes: z.array(z.string()).nullable().optional(),
+  clientTestimonial: z
+    .object({
+      quote: z.string(),
+      author: z.string(),
+      role: z.string(),
+      company: z.string(),
+    })
+    .nullable()
+    .optional(),
+  technologies: z.array(z.string()).nullable().optional(),
+});
+
 export const featureSchema = z.object({
   title: z.string(),
   icon: z.string(),
@@ -47,18 +49,14 @@ export const featureSchema = z.object({
   content: z.string(),
 });
 
-// Project schemas
-export const insertProjectSchema = createInsertSchema(projects)
-  .omit({ id: true })
-  .extend({
-    thumbnailFile: z.any().optional(),
-  });
+export const insertProjectSchema = projectSchema.omit({ id: true }).extend({
+  thumbnailFile: z.any().optional(),
+});
 
-export const insertProfileSchema = createInsertSchema(profile).omit({ id: true });
+export const insertProfileSchema = profileSchema.omit({ id: true });
 
-// Type exports
-export type Project = typeof projects.$inferSelect;
-export type Profile = typeof profile.$inferSelect;
+export type Project = z.infer<typeof projectSchema>;
+export type Profile = z.infer<typeof profileSchema>;
 export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type InsertProfile = z.infer<typeof insertProfileSchema>;
 export type Feature = z.infer<typeof featureSchema>;

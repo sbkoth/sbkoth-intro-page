@@ -92,14 +92,14 @@ CardBulletList.displayName = "CardBulletList"
 const CardBulletItem = React.forwardRef<
   HTMLLIElement,
   React.HTMLAttributes<HTMLLIElement>
->(({ className, ...props }, ref) => (
+>(({ className, children, ...props }, ref) => (
   <li
     ref={ref}
     className={cn("flex items-center gap-2", className)}
     {...props}
   >
     <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-    <span className="text-sm">{props.children}</span>
+    <span className="text-sm">{children}</span>
   </li>
 ))
 CardBulletItem.displayName = "CardBulletItem"

@@ -1,10 +1,14 @@
 import type { Project, Profile, Feature } from "@shared/schema";
-import { projects, profile } from "@shared/schema";
-import { db } from "./db";
-import { loadProjects } from "./project-utils";
-import { loadServices, type Service } from "./services-utils";
-import { loadFeatures } from "./features-utils";
+import {
+  loadProjects as loadMarkdownProjects,
+  loadServices,
+  loadFeatures,
+  loadProfile,
+  type ServiceData,
+} from "../scripts/export-content";
 import { cacheService } from "./cache-service";
+
+export type Service = ServiceData;
 
 export interface IStorage {
   getProfile(): Promise<Profile>;
@@ -14,72 +18,56 @@ export interface IStorage {
   getFeatures(): Promise<Feature[]>;
 }
 
-export class DatabaseStorage implements IStorage {
+/**
+ * File-backed storage for local dev and static export parity.
+ * Public portfolio content lives in markdown + content/profile.json — no DB required.
+ */
+export class FileStorage implements IStorage {
   async getProfile(): Promise<Profile> {
-    const cached = cacheService.get('profile');
+    const cached = cacheService.get("profile");
     if (cached) return cached;
 
-    const [profileData] = await db.select().from(profile);
-    cacheService.set('profile', profileData);
+    const profileData = (await loadProfile()) as Profile;
+    cacheService.set("profile", profileData);
     return profileData;
   }
 
   async getProjects(): Promise<Project[]> {
-    const cached = cacheService.get('projects');
+    const cached = cacheService.get("projects");
     if (cached) return cached;
 
-    const projectsData = await db.select().from(projects);
-    cacheService.set('projects', projectsData);
+    const list = await loadMarkdownProjects();
+    const projectsData = list.map((p) => ({
+      ...p,
+      publishedAt: new Date(p.publishedAt),
+      type: p.type as Project["type"],
+    })) as Project[];
+    cacheService.set("projects", projectsData);
     return projectsData;
   }
 
-  // Admin-related methods have been removed
-
   async syncProjects(): Promise<void> {
-    const projectsList = await loadProjects();
-    await db.delete(projects);
-    if (projectsList.length > 0) {
-      // Prepare all project data for batch insert
-      const projectsData = projectsList.map(project => ({
-        slug: project.slug,
-        title: project.title,
-        description: project.description,
-        content: project.content,
-        publishedAt: project.publishedAt ? new Date(project.publishedAt) : new Date(),
-        thumbnail: project.thumbnail,
-        type: project.type as "image" | "pdf" | "slides" | "text",
-        challenge: project.challenge || null,
-        approach: project.approach || null,
-        implementation: project.implementation || null,
-        outcomes: project.outcomes || [],
-        clientTestimonial: project.clientTestimonial || null,
-        technologies: project.technologies || []
-      }));
-      
-      // Insert all projects in a single batch
-      await db.insert(projects).values(projectsData);
-    }
-    // Invalidate projects cache after sync
-    cacheService.invalidate('projects');
+    // No-op: projects are read from markdown on each cache miss.
+    cacheService.invalidate("projects");
   }
 
   async getServices(): Promise<Service[]> {
-    const cached = cacheService.get('services');
+    const cached = cacheService.get("services");
     if (cached) return cached;
 
     const services = await loadServices();
-    cacheService.set('services', services);
+    cacheService.set("services", services);
     return services;
   }
 
   async getFeatures(): Promise<Feature[]> {
-    const cached = cacheService.get('features');
+    const cached = cacheService.get("features");
     if (cached) return cached;
 
     const features = await loadFeatures();
-    cacheService.set('features', features);
+    cacheService.set("features", features);
     return features;
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new FileStorage();

@@ -7,7 +7,7 @@ import PdfViewer from "./pdf-viewer";
 import SlideViewer from "./slide-viewer";
 import CaseStudy from "./case-study";
 import { ArrowRight, Database, Cloud, GitMerge, Server, Network, Code, Cpu } from "lucide-react";
-import { SiKubernetes, SiApachekafka, SiAmazon, SiGooglecloud, SiTerraform, SiDocker, SiOracle } from "react-icons/si";
+import { SiKubernetes, SiApachekafka, SiGooglecloud, SiTerraform, SiDocker } from "react-icons/si";
 
 interface ProjectCardProps {
   project: Project;
@@ -52,7 +52,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     } else if (lowerTechs.some(tech => tech.includes('kafka'))) {
       return <SiApachekafka className="h-5 w-5 text-primary" />;
     } else if (lowerTechs.some(tech => tech.includes('aws'))) {
-      return <SiAmazon className="h-5 w-5 text-primary" />;
+      return <Cloud className="h-5 w-5 text-primary" />;
     } else if (lowerTechs.some(tech => tech.includes('google cloud'))) {
       return <SiGooglecloud className="h-5 w-5 text-primary" />;
     } else if (lowerTechs.some(tech => tech.includes('terraform'))) {
@@ -60,7 +60,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     } else if (lowerTechs.some(tech => tech.includes('docker'))) {
       return <SiDocker className="h-5 w-5 text-primary" />;
     } else if (lowerTechs.some(tech => tech.includes('oracle'))) {
-      return <SiOracle className="h-5 w-5 text-primary" />;
+      return <Database className="h-5 w-5 text-primary" />;
     } else if (lowerTechs.some(tech => tech.includes('cloud'))) {
       return <Cloud className="h-5 w-5 text-primary" />;
     } else if (lowerTechs.some(tech => tech.includes('data'))) {

@@ -1,0 +1,48 @@
+/**
+ * Unit tests for shipped static path helpers.
+ * Run: npx tsx --test client/src/lib/static-data.test.ts
+ */
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
+import { resolveDataUrl, resolveAssetUrl } from "./static-data.ts";
+
+describe("resolveDataUrl / resolveAssetUrl (shipped)", () => {
+  it("builds data URLs under default base /", () => {
+    assert.equal(resolveDataUrl("profile", "/"), "/data/profile.json");
+    assert.equal(resolveDataUrl("projects", "/"), "/data/projects.json");
+    assert.equal(resolveAssetUrl("/uploads/photo.jpg", "/"), "/uploads/photo.jpg");
+    assert.equal(
+      resolveAssetUrl("https://example.com/x.png", "/"),
+      "https://example.com/x.png",
+    );
+  });
+
+  it("prefixes data and assets with project Pages base path", () => {
+    assert.equal(
+      resolveDataUrl("features", "/sbkoth-intro-page/"),
+      "/sbkoth-intro-page/data/features.json",
+    );
+    assert.equal(
+      resolveDataUrl("services", "/sbkoth-intro-page/"),
+      "/sbkoth-intro-page/data/services.json",
+    );
+    assert.equal(
+      resolveAssetUrl(
+        "/uploads/1740109013236-profile-photo.jpg",
+        "/sbkoth-intro-page/",
+      ),
+      "/sbkoth-intro-page/uploads/1740109013236-profile-photo.jpg",
+    );
+  });
+
+  it("handles base without trailing slash", () => {
+    assert.equal(
+      resolveDataUrl("profile", "/sbkoth-intro-page"),
+      "/sbkoth-intro-page/data/profile.json",
+    );
+    assert.equal(
+      resolveAssetUrl("/uploads/a.jpg", "/sbkoth-intro-page"),
+      "/sbkoth-intro-page/uploads/a.jpg",
+    );
+  });
+});

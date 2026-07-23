@@ -1,73 +1,48 @@
-# Portfolio Website with Content Management
+# Srinivas Kothapalli — Portfolio
 
-A modern portfolio website featuring dynamic content management for projects and professional expertise. The content is managed through markdown files, making it easy to add or modify content without changing the code.
+Personal portfolio site for tech leadership, data platforms, streaming, cloud, and AI work. Content is authored as markdown under `content/` and exported to static JSON for free [GitHub Pages](https://pages.github.com/) hosting.
 
-## Adding Content
+**Live site:** https://sbkoth.github.io/sbkoth-intro-page/
 
-### Projects
+## Stack
 
-To add a new project:
+- React 19 + Vite 6 + TypeScript + Tailwind CSS 3
+- TanStack Query for client data loading
+- Static content export (no runtime Node/Express/Postgres required for production)
+- Optional Express server for local development
 
-1. Create a new markdown file in `content/projects` directory (e.g., `my-project.md`)
-2. Add the required frontmatter:
-   ```markdown
-   ---
-   title: Your Project Title
-   description: Brief project description
-   publishedAt: YYYY-MM-DD
-   thumbnail: /uploads/project-thumbnail.jpg
-   type: text
-   ---
-   ```
-3. Write your project content in markdown format below the frontmatter
-4. Restart the application to see your changes
+## Content
 
-The `type` field can be one of:
-- `text`: Regular markdown content
-- `pdf`: PDF document display
-- `slides`: Image slideshow
-- `image`: Single image display
+| Path | Purpose |
+|------|---------|
+| `content/profile.json` | Name, title, bio, avatar, socials |
+| `content/projects/*.md` | Project cards (frontmatter + markdown body) |
+| `content/features/*.md` | Professional expertise cards |
+| `content/services/*.md` | Service offerings |
+| `uploads/` | Images and files referenced as `/uploads/...` |
 
-Example project structure:
-```markdown
----
-title: Cloud Migration Strategy
-description: Enterprise-scale cloud migration framework
-publishedAt: 2024-02-21
-thumbnail: /uploads/cloud-migration.jpg
-type: text
----
+Run `npm run export:content` (also runs on `predev` / `prebuild`) to materialize `client/public/data/*.json` and copy uploads.
 
-# Cloud Migration Framework
+## Scripts
 
-## Overview
-
-This project delivered a comprehensive cloud migration...
+```bash
+npm install
+npm run dev          # export content + Express + Vite HMR on port 5000
+npm run check        # TypeScript
+npm test             # content export + path helper unit tests
+npm run build        # static export + Vite client + optional server bundle
+npm run build:pages  # client-only static build for Pages
 ```
 
-## File Structure
+Production Pages base path is `/sbkoth-intro-page/` (see `vite.config.ts` / `VITE_BASE`).
 
-```
-content/
-├── projects/
-│   ├── example-project.md
-│   └── [your-projects].md
-├── features/
-│   ├── expertise-category.md
-│   └── [your-expertise-categories].md
-└── services/
-    ├── service-name.md
-    └── [your-services].md
-```
+## Deploy (GitHub Pages — free)
 
-## Images and Files
+This repo includes `.github/workflows/deploy-pages.yml`, which builds and deploys on every push to `main`.
 
-1. Place all image files in the `uploads` directory
-2. Reference images using the path `/uploads/your-image.jpg`
-3. For project files (PDFs, etc.), also use the `uploads` directory
+One-time setup (if Pages is not already using Actions):
 
-## Updating Content
+1. Repo **Settings → Pages → Build and deployment → Source: GitHub Actions**
+2. Push to `main` (or re-run the workflow)
 
-1. To modify existing content, edit the corresponding markdown file
-2. To delete content, remove the markdown file
-3. Always restart the application after making changes to see your updates
+No paid hosting or database is required for the public site.

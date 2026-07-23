@@ -1,26 +1,27 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle, 
-  CardBulletList, 
-  CardBulletItem 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardBulletList,
+  CardBulletItem,
 } from "@/components/ui/card";
-import { 
-  Code2, 
-  GitMerge, 
-  AlertCircle, 
-  Zap, 
-  Database, 
-  Brain, 
-  Cloud, 
+import {
+  Code2,
+  GitMerge,
+  AlertCircle,
+  Zap,
+  Database,
+  Brain,
+  Cloud,
   Shield,
-  CreditCard
+  CreditCard,
 } from "lucide-react";
 import type { Feature } from "@shared/schema";
 import ContentDialog from "./content-dialog";
+import { dataUrl } from "@/lib/static-data";
 
 const iconMap: Record<string, React.ReactNode> = {
   Code2: <Code2 className="h-8 w-8" />,
@@ -35,13 +36,25 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 function FeaturesComponent() {
-  const { data: features } = useQuery<Feature[]>({
-    queryKey: ["/api/features"],
+  const { data: features, isError } = useQuery<Feature[]>({
+    queryKey: [dataUrl("features")],
   });
 
   const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
 
+  if (isError) {
+    return (
+      <div className="bg-muted/50 py-16 text-center text-destructive">
+        Failed to load professional expertise.
+      </div>
+    );
+  }
+
   if (!features) {
+    return null;
+  }
+
+  if (features.length === 0) {
     return null;
   }
 
@@ -52,31 +65,38 @@ function FeaturesComponent() {
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Professional Expertise</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              We deliver end-to-end solutions across a wide range of technology domains, combining strategic vision with technical excellence.
+              End-to-end solutions across technology domains, combining strategic
+              vision with technical excellence.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card 
-                key={index} 
+              <Card
+                key={`${feature.title}-${index}`}
                 className="hover:shadow-lg transition-all cursor-pointer hover:scale-[1.02] border-t-4 border-t-primary"
                 onClick={() => setSelectedFeature(feature)}
               >
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <div className="text-primary bg-primary/10 p-3 rounded-lg">
-                      {iconMap[feature.icon]}
+                      {iconMap[feature.icon] ?? (
+                        <Code2 className="h-8 w-8" />
+                      )}
                     </div>
                     <CardTitle className="text-xl">{feature.title}</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground mb-4">{feature.description}</p>
-                  <CardBulletList>
-                    {feature.highlights.map((highlight, i) => (
-                      <CardBulletItem key={i}>{highlight}</CardBulletItem>
-                    ))}
-                  </CardBulletList>
+                  <p className="text-muted-foreground mb-4">
+                    {feature.description}
+                  </p>
+                  {feature.highlights?.length > 0 && (
+                    <CardBulletList>
+                      {feature.highlights.map((highlight, i) => (
+                        <CardBulletItem key={i}>{highlight}</CardBulletItem>
+                      ))}
+                    </CardBulletList>
+                  )}
                 </CardContent>
               </Card>
             ))}
@@ -96,5 +116,4 @@ function FeaturesComponent() {
   );
 }
 
-// Export memoized component to prevent unnecessary re-renders
 export default React.memo(FeaturesComponent);

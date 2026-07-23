@@ -6,9 +6,9 @@ import ProjectGrid from "@/components/project-grid";
 import Contact from "@/components/contact";
 import Features from "@/components/features";
 import { Skeleton } from "@/components/ui/skeleton";
+import { dataUrl } from "@/lib/static-data";
 import type { Profile, Project } from "@shared/schema";
 
-// Loading skeleton component
 const LoadingSkeleton = () => (
   <div className="space-y-8 p-4">
     <Skeleton className="h-[400px] w-full" />
@@ -20,18 +20,20 @@ const LoadingSkeleton = () => (
 );
 
 export default function Home() {
-  const { data: profile, isError: profileError } = useQuery<Profile>({ 
-    queryKey: ["/api/profile"]
+  const { data: profile, isError: profileError } = useQuery<Profile>({
+    queryKey: [dataUrl("profile")],
   });
 
   const { data: projects, isError: projectsError } = useQuery<Project[]>({
-    queryKey: ["/api/projects"]
+    queryKey: [dataUrl("projects")],
   });
 
   if (profileError || projectsError) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-destructive">Failed to load content. Please try again later.</p>
+        <p className="text-destructive">
+          Failed to load content. Please try again later.
+        </p>
       </div>
     );
   }
