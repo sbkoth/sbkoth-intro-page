@@ -1,6 +1,5 @@
 /**
- * Structural tests for shipped TUI theme tokens (real CSS file).
- * Run: npx tsx --test client/src/theme-tui.test.ts
+ * Structural check: primary home is interactive terminal surface.
  */
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
@@ -9,36 +8,45 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const cssPath = path.join(__dirname, "index.css");
-const tailwindPath = path.join(__dirname, "../../tailwind.config.ts");
 
-describe("TUI theme (shipped styles)", () => {
-  it("uses monospace as primary font and dark terminal palette", () => {
-    const css = fs.readFileSync(cssPath, "utf-8");
-    assert.match(css, /font-mono/, "body should use mono");
-    assert.match(css, /--background:/, "terminal bg token");
-    assert.match(css, /--primary:/, "green primary token");
-    assert.match(css, /\.tui-window/, "single terminal window shell");
-    assert.match(css, /\.tui-link-row/, "contact link row for mailto");
-    assert.match(css, /color-scheme:\s*dark/, "dark color scheme");
-    assert.match(css, /pointer-events:\s*none/, "scanlines must not block clicks");
+describe("terminal primary surface (shipped)", () => {
+  it("home renders Terminal component", () => {
+    const home = fs.readFileSync(path.join(__dirname, "pages/home.tsx"), "utf-8");
+    assert.match(home, /from \"@\/terminal\/Terminal\"|from '@\/terminal\/Terminal'/);
+    assert.match(home, /<Terminal/);
   });
 
-  it("configures JetBrains Mono in Tailwind font stack", () => {
-    const tw = fs.readFileSync(tailwindPath, "utf-8");
-    assert.match(tw, /JetBrains Mono/);
-    assert.match(tw, /fontFamily/);
+  it("Terminal has prompt input and keyboard handlers", () => {
+    const term = fs.readFileSync(
+      path.join(__dirname, "terminal/Terminal.tsx"),
+      "utf-8",
+    );
+    assert.match(term, /terminal-input/);
+    assert.match(term, /ArrowUp|historyUp/);
+    assert.match(term, /Tab|autocomplete/);
+    assert.match(term, /Ctrl|ctrlL|clear/);
+    assert.match(term, /data-testid=\"terminal-wrapper\"/);
   });
 
-  it("ships TerminalPanel and mailto-capable contact", () => {
-    const panel = path.join(__dirname, "components/terminal-panel.tsx");
-    const contact = path.join(__dirname, "components/contact.tsx");
-    assert.ok(fs.existsSync(panel));
-    assert.ok(fs.existsSync(contact));
-    const src = fs.readFileSync(panel, "utf-8");
-    const contactSrc = fs.readFileSync(contact, "utf-8");
-    assert.match(src, /visitor/);
-    assert.match(contactSrc, /openMailto|buildMailtoHref|mailto:/);
+  it("command registry includes help/welcome/themes/projects", () => {
+    const cmds = fs.readFileSync(
+      path.join(__dirname, "terminal/commands.ts"),
+      "utf-8",
+    );
+    for (const c of [
+      "help",
+      "welcome",
+      "clear",
+      "themes",
+      "projects",
+      "socials",
+      "email",
+      "history",
+      "echo",
+      "pwd",
+      "whoami",
+    ]) {
+      assert.match(cmds, new RegExp(`\"${c}\"`));
+    }
   });
 });
-
