@@ -44,6 +44,9 @@ jobs:
           VITE_BASE: /sbkoth-intro-page/
         run: npx vite build
 
+      - name: Ensure .nojekyll for Pages asset paths
+        run: touch dist/public/.nojekyll
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
