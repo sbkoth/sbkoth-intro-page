@@ -34,31 +34,14 @@ npm run build        # static export + Vite client + optional server bundle
 npm run build:pages  # client-only static build for Pages
 ```
 
-Production Pages base path is `/sbkoth-intro-page/` (see `vite.config.ts` / `VITE_BASE`).
+The production build uses **root base path `/`** (see `vite.config.ts`, `VITE_BASE=/`). Routes and assets are `/`, `/data/*`, `/assets/*`, `/uploads/*`.
 
 ## Deploy (GitHub Pages — free)
 
-This repo includes `.github/workflows/deploy-pages.yml`, which builds and publishes the static site to the **`gh-pages`** branch on every push to `main`.
+`.github/workflows/deploy-pages.yml` builds with `VITE_BASE=/` and publishes to the **`gh-pages`** branch on every push to `main`.
 
-**Why Actions may show `Failed to create deployment (status: 404)`:**  
-GitHub’s own rule is that **`GITHUB_TOKEN` cannot enable Pages the first time** — only a repo admin (UI or PAT) can. After Pages is on, deploys succeed automatically.
+**Pages source:** Settings → Pages → Deploy from a branch → **`gh-pages`** / **(root)**.
 
-**One-time enable (about 30 seconds, free for public repos):**
-
-1. Repo is already **public** (required for free Pages).
-2. Open **Settings → Pages**  
-   https://github.com/sbkoth/sbkoth-intro-page/settings/pages  
-3. **Build and deployment → Source:** Deploy from a branch  
-   - Branch: **`gh-pages`**  
-   - Folder: **`/ (root)`**  
-   - Save  
-4. Wait ~1 minute, then open:  
-   https://sbkoth.github.io/sbkoth-intro-page/
-
-If you prefer the CLI after `gh auth login`:
-
-```bash
-./scripts/enable-github-pages.sh
-```
+Project Pages URL: https://sbkoth.github.io/sbkoth-intro-page/
 
 No paid hosting or database is required for the public site.

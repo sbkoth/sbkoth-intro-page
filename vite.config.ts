@@ -6,9 +6,9 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Project GitHub Pages URL: https://sbkoth.github.io/sbkoth-intro-page/
-// Override with VITE_BASE=/ for root-domain or local static preview.
-const base = process.env.VITE_BASE ?? "/sbkoth-intro-page/";
+// Served at site root (e.g. https://sbkoth.github.io/ or a custom domain).
+// Override with VITE_BASE=/some-prefix/ only if hosting under a subpath.
+const base = process.env.VITE_BASE ?? "/";
 
 export default defineConfig({
   base,

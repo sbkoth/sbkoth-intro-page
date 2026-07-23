@@ -5,10 +5,10 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 
-/** Strip trailing slash for wouter base (BASE_URL is e.g. /sbkoth-intro-page/). */
+/** Strip trailing slash for wouter base (empty when site is at /). */
 function routerBase(): string {
   const base = import.meta.env.BASE_URL || "/";
-  if (base === "/") return "";
+  if (base === "/" || base === "./") return "";
   return base.endsWith("/") ? base.slice(0, -1) : base;
 }
 

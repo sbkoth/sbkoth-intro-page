@@ -1,6 +1,6 @@
 /**
  * Static content paths for GitHub Pages (and local static builds).
- * Paths are rooted at Vite's BASE_URL so project Pages work under /sbkoth-intro-page/.
+ * Paths are rooted at Vite's BASE_URL (default `/` for root hosting).
  */
 
 /** Pure helpers — take explicit base so unit tests drive the same code as production. */

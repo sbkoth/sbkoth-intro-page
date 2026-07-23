@@ -47,9 +47,9 @@ jobs:
       - name: Unit tests
         run: npm test
 
-      - name: Build client for GitHub Pages
+      - name: Build client for GitHub Pages (root path /)
         env:
-          VITE_BASE: /sbkoth-intro-page/
+          VITE_BASE: /
         run: npx vite build
 
       - name: Ensure .nojekyll for Pages asset paths
