@@ -171,7 +171,12 @@ export function dispatchCommand(
       if (args.length > 0) return usage("email");
       const email = data.profile.socials.email;
       return {
-        lines: [`Opening mailto:${email} ...`],
+        lines: [
+          `To: ${email}`,
+          "Opening Gmail compose (new tab) and trying your default mail app…",
+          `mailto:${email}`,
+          `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`,
+        ],
         sideEffect: { type: "mailto", email },
       };
     }

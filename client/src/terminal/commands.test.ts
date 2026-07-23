@@ -105,12 +105,15 @@ describe("dispatchCommand (shipped)", () => {
     }
   });
 
-  it("email returns mailto side effect", () => {
+  it("email returns mailto side effect and lists addresses", () => {
     const r = dispatchCommand("email", data, [], themes);
     assert.equal(r.sideEffect?.type, "mailto");
     if (r.sideEffect?.type === "mailto") {
       assert.equal(r.sideEffect.email, "bobby@prameya.legal");
     }
+    const text = r.lines.join("\n");
+    assert.match(text, /bobby@prameya\.legal/);
+    assert.match(text, /mail\.google\.com/);
   });
 
   it("socials go opens github", () => {

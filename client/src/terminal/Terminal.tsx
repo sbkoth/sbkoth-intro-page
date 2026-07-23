@@ -155,7 +155,8 @@ export default function Terminal() {
     if (fx.type === "theme") {
       setThemeName(fx.name);
     } else if (fx.type === "mailto") {
-      openMailto(fx.email);
+      // Must stay synchronous inside the submit gesture for popups
+      openMailto(fx.email, "Hello from your portfolio");
     } else if (fx.type === "open") {
       window.open(fx.url, "_blank", "noopener,noreferrer");
     }
@@ -167,6 +168,8 @@ export default function Terminal() {
     const line = inputVal;
     const result = dispatchCommand(line, portfolio, cmdHistory, THEME_NAMES);
 
+    // Run side effects first while still in the user-gesture stack
+    // (popup blockers ignore delayed window.open).
     if (result.sideEffect?.type === "clear") {
       setEntries([]);
       setCmdHistory((h) => [line, ...h]);
@@ -176,6 +179,8 @@ export default function Terminal() {
       return;
     }
 
+    runSideEffect(result);
+
     setEntries((prev) => [
       ...prev,
       { id: ++entryId, input: line, result },
@@ -184,7 +189,6 @@ export default function Terminal() {
     setInputVal("");
     setHints([]);
     setPointer(-1);
-    runSideEffect(result);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
