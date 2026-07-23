@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -52,6 +52,15 @@ jobs:
         with:
           path: dist/public
 
+      # Fallback branch publish so classic Pages (gh-pages) also works
+      - name: Publish gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist/public
+          force_orphan: true
+          enable_jekyll: false
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -59,6 +68,56 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Ensure GitHub Pages site exists (Actions source)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            async function ensurePages() {
+              try {
+                await github.rest.repos.getPages({ owner, repo });
+                console.log('Pages site already configured');
+                try {
+                  await github.request('PUT /repos/{owner}/{repo}/pages', {
+                    owner,
+                    repo,
+                    build_type: 'workflow',
+                  });
+                  console.log('Updated Pages build_type to workflow');
+                } catch (e) {
+                  console.log('Pages update skipped:', e.status, e.message);
+                }
+                return;
+              } catch (e) {
+                if (e.status !== 404) {
+                  console.log('getPages error:', e.status, e.message);
+                }
+              }
+              try {
+                await github.rest.repos.createPagesSite({
+                  owner,
+                  repo,
+                  build_type: 'workflow',
+                });
+                console.log('Created Pages site with build_type=workflow');
+                return;
+              } catch (e) {
+                console.log('createPagesSite(workflow) failed:', e.status, e.message);
+              }
+              try {
+                await github.rest.repos.createPagesSite({
+                  owner,
+                  repo,
+                  source: { branch: 'gh-pages', path: '/' },
+                });
+                console.log('Created Pages site from gh-pages branch');
+              } catch (e) {
+                console.log('createPagesSite(branch) failed:', e.status, e.message);
+              }
+            }
+            await ensurePages();
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
