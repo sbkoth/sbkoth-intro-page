@@ -38,11 +38,13 @@ Production Pages base path is `/sbkoth-intro-page/` (see `vite.config.ts` / `VIT
 
 ## Deploy (GitHub Pages — free)
 
-This repo includes `.github/workflows/deploy-pages.yml`, which builds and deploys on every push to `main`.
+This repo includes `.github/workflows/deploy-pages.yml`, which builds and deploys on every push to `main`. A prebuilt `gh-pages` branch is also pushed as a fallback.
 
-One-time setup (if Pages is not already using Actions):
+**One-time setup (free plan):**
 
-1. Repo **Settings → Pages → Build and deployment → Source: GitHub Actions**
-2. Push to `main` (or re-run the workflow)
+1. Make the repository **public** (Settings → General → Danger Zone → Change visibility). Free GitHub Pages requires a public repo (private Pages needs a paid plan).
+2. Settings → **Pages** → Build and deployment → Source: **GitHub Actions** (preferred), **or** Deploy from branch → `gh-pages` / root.
+3. After the workflow finishes (or the branch is selected), open:  
+   https://sbkoth.github.io/sbkoth-intro-page/
 
 No paid hosting or database is required for the public site.
