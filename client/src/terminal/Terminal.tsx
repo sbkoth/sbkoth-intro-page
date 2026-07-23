@@ -26,6 +26,7 @@ import {
   loadStoredThemeName,
   storeThemeName,
 } from "./themes";
+import WelcomeBanner from "./WelcomeBanner";
 
 type HistoryEntry = {
   id: number;
@@ -73,6 +74,7 @@ export default function Terminal() {
         name: profile.name,
         title: profile.title,
         bio: profile.bio,
+        avatar: profile.avatar,
         socials: profile.socials,
       },
       projects: projects.map((p) => ({
@@ -266,7 +268,8 @@ export default function Terminal() {
               {entry.input}
             </span>
           </div>
-          {entry.result.lines.length > 0 && (
+          {(entry.result.variant === "welcome" ||
+            entry.result.lines.length > 0) && (
             <div
               className="term-output"
               data-testid={
@@ -275,11 +278,18 @@ export default function Terminal() {
                   : undefined
               }
             >
-              {entry.result.lines.map((line, i) => (
-                <div key={i} className="term-output-line">
-                  {line === "" ? "\u00A0" : line}
-                </div>
-              ))}
+              {entry.result.variant === "welcome" && entry.result.welcomeName ? (
+                <WelcomeBanner
+                  name={entry.result.welcomeName}
+                  avatar={entry.result.welcomeAvatar}
+                />
+              ) : (
+                entry.result.lines.map((line, i) => (
+                  <div key={i} className="term-output-line">
+                    {line === "" ? "\u00A0" : line}
+                  </div>
+                ))
+              )}
             </div>
           )}
         </div>

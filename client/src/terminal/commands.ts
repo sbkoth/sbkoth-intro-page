@@ -8,6 +8,7 @@ export type PortfolioData = {
     name: string;
     title: string;
     bio: string;
+    avatar?: string;
     socials: {
       github?: string;
       linkedin?: string;
@@ -66,6 +67,10 @@ export type SideEffect =
 export type DispatchResult = {
   lines: string[];
   sideEffect?: SideEffect;
+  /** Rich welcome layout: logo + portrait side-by-side */
+  variant?: "welcome";
+  welcomeName?: string;
+  welcomeAvatar?: string;
 };
 
 function usage(cmd: string, detail?: string): DispatchResult {
@@ -80,24 +85,9 @@ function padCmd(cmd: string, width = 12): string {
   return cmd + " ".repeat(Math.max(1, width - cmd.length));
 }
 
-export function welcomeLines(name: string): string[] {
-  return [
-    "",
-    "  ███████╗██████╗ ██╗  ██╗ ██████╗ ████████╗██╗  ██╗",
-    "  ██╔════╝██╔══██╗██║ ██╔╝██╔═══██╗╚══██╔══╝██║  ██║",
-    "  ███████╗██████╔╝█████╔╝ ██║   ██║   ██║   ███████║",
-    "  ╚════██║██╔══██╗██╔═██╗ ██║   ██║   ██║   ██╔══██║",
-    "  ███████║██████╔╝██║  ██╗╚██████╔╝   ██║   ██║  ██║",
-    "  ╚══════╝╚═════╝ ╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝",
-    "",
-    `  Welcome to ${name}'s terminal portfolio.`,
-    "  ----",
-    "  Type `help` for available commands.",
-    "  Tab / Ctrl+I autocomplete · ↑/↓ history · Ctrl+L clear",
-    "  ----",
-    "",
-  ];
-}
+import { welcomeBannerLines } from "./welcome-art";
+
+export { welcomeBannerLines as welcomeLines } from "./welcome-art";
 
 export function dispatchCommand(
   raw: string,
@@ -135,7 +125,12 @@ export function dispatchCommand(
       };
 
     case "welcome":
-      return { lines: welcomeLines(data.profile.name) };
+      return {
+        lines: welcomeBannerLines(data.profile.name),
+        variant: "welcome",
+        welcomeName: data.profile.name,
+        welcomeAvatar: data.profile.avatar,
+      };
 
     case "whoami":
       return { lines: ["visitor"] };

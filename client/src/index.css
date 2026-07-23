@@ -207,3 +207,139 @@
     width: 100%;
   }
 }
+
+/* ===== Welcome banner: logo + portrait ===== */
+.welcome-banner {
+  margin: 0.35rem 0 0.85rem;
+}
+
+.welcome-banner-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.75rem;
+}
+
+.welcome-logo-col {
+  flex: 1 1 16rem;
+  min-width: 0;
+  color: var(--term-primary);
+  text-shadow: 0 0 18px color-mix(in srgb, var(--term-primary) 35%, transparent);
+}
+
+.welcome-art-col {
+  flex: 0 0 auto;
+  color: var(--term-secondary);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--term-secondary) 30%, transparent);
+  position: relative;
+}
+
+.welcome-art-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.welcome-photo {
+  width: 7rem;
+  height: 7rem;
+  object-fit: cover;
+  object-position: top center;
+  border: 1px solid color-mix(in srgb, var(--term-primary) 45%, transparent);
+  border-radius: 0.35rem;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--term-secondary) 25%, transparent),
+    0 0 28px -6px color-mix(in srgb, var(--term-primary) 40%, transparent);
+  filter: contrast(1.05) saturate(0.95);
+}
+
+.welcome-pre {
+  margin: 0;
+  font-family: inherit;
+  font-size: 0.72rem;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.welcome-logo-desktop {
+  display: block;
+  font-size: clamp(0.45rem, 1.35vw, 0.78rem);
+  line-height: 1.12;
+}
+
+.welcome-logo-mobile {
+  display: none;
+  font-size: 0.7rem;
+}
+
+.welcome-portrait {
+  font-size: 0.68rem;
+  line-height: 1.12;
+  opacity: 0.95;
+  animation: welcome-glow 3.2s ease-in-out infinite alternate;
+}
+
+.welcome-art-caption {
+  margin-top: 0.35rem;
+  font-size: 0.7rem;
+  color: var(--term-text-dim);
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+.welcome-copy {
+  margin-top: 0.85rem;
+  color: var(--term-text);
+  font-size: 0.95rem;
+}
+
+.welcome-sep {
+  color: var(--term-text-dim);
+  margin: 0.35rem 0;
+}
+
+.welcome-cmd {
+  color: var(--term-primary);
+  font-weight: 600;
+}
+
+.welcome-keys {
+  color: var(--term-text-dim);
+  font-size: 0.85rem;
+  margin-top: 0.2rem;
+}
+
+@keyframes welcome-glow {
+  from {
+    opacity: 0.88;
+    filter: brightness(0.95);
+  }
+  to {
+    opacity: 1;
+    filter: brightness(1.08);
+  }
+}
+
+@media (max-width: 720px) {
+  .welcome-banner-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .welcome-logo-desktop {
+    display: none;
+  }
+
+  .welcome-logo-mobile {
+    display: block;
+  }
+
+  .welcome-art-col {
+    align-self: center;
+  }
+}
+
