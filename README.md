@@ -2,7 +2,7 @@
 
 Personal portfolio site for tech leadership, data platforms, streaming, cloud, and AI work. Content is authored as markdown under `content/` and exported to static JSON for free [GitHub Pages](https://pages.github.com/) hosting.
 
-**Live site:** https://sbkoth.github.io/sbkoth-intro-page/
+**Live site:** https://sbkoth.github.io/
 
 ## Stack
 
@@ -34,17 +34,16 @@ npm run build        # static export + Vite client + optional server bundle
 npm run build:pages  # client-only static build for Pages
 ```
 
-The production build uses a **root-relative** base (`./` in `vite.config.ts`). The app is served from the root of its deployment directory (routes `/`, assets `./assets/*`, data `./data/*`) so it works at:
-
-- https://sbkoth.github.io/sbkoth-intro-page/ (project Pages), and  
-- a user site or custom domain at `/` if you host there later.
+Production base path is **`/`** (user site `sbkoth.github.io`).
 
 ## Deploy (GitHub Pages — free)
 
-`.github/workflows/deploy-pages.yml` builds with `VITE_BASE=./` and publishes to the **`gh-pages`** branch on every push to `main`.
+Repo: **https://github.com/sbkoth/sbkoth.github.io**
 
-**Pages source:** Settings → Pages → Deploy from a branch → **`gh-pages`** / **(root)**.
+`.github/workflows/deploy-pages.yml` builds with `VITE_BASE=/` and publishes to the **`gh-pages`** branch on every push to `main`.
 
-Live: https://sbkoth.github.io/sbkoth-intro-page/
+**Pages source:** Settings → Pages → Deploy from a branch → **`gh-pages`** / **`/ (root)`**.
+
+Live: **https://sbkoth.github.io/**
 
 No paid hosting or database is required for the public site.

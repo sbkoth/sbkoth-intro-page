@@ -1,6 +1,6 @@
 /**
- * Static content paths for GitHub Pages (and local static builds).
- * Default Vite base is `./` (root of the deployment directory).
+ * Static content paths for the user GitHub Pages site (https://sbkoth.github.io/).
+ * Default Vite BASE_URL is `/`.
  */
 
 function normalizeBase(base: string): string {
@@ -43,10 +43,10 @@ export function resolveAssetUrl(
 export function dataUrl(
   name: "profile" | "projects" | "services" | "features",
 ): string {
-  return resolveDataUrl(name, import.meta.env.BASE_URL || "./");
+  return resolveDataUrl(name, import.meta.env.BASE_URL || "/");
 }
 
 /** Prefix site-relative asset paths (e.g. /uploads/...) with the Vite base. */
 export function assetUrl(path: string | undefined | null): string {
-  return resolveAssetUrl(path, import.meta.env.BASE_URL || "./");
+  return resolveAssetUrl(path, import.meta.env.BASE_URL || "/");
 }

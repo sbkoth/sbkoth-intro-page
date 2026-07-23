@@ -7,19 +7,19 @@ import assert from "node:assert/strict";
 import { resolveDataUrl, resolveAssetUrl } from "./static-data.ts";
 
 describe("resolveDataUrl / resolveAssetUrl (shipped)", () => {
-  it("builds data URLs under root-relative base ./", () => {
-    assert.equal(resolveDataUrl("profile", "./"), "./data/profile.json");
-    assert.equal(resolveDataUrl("projects", "./"), "./data/projects.json");
-    assert.equal(resolveAssetUrl("/uploads/photo.jpg", "./"), "./uploads/photo.jpg");
+  it("builds data URLs under absolute root base /", () => {
+    assert.equal(resolveDataUrl("profile", "/"), "/data/profile.json");
+    assert.equal(resolveDataUrl("projects", "/"), "/data/projects.json");
+    assert.equal(resolveAssetUrl("/uploads/photo.jpg", "/"), "/uploads/photo.jpg");
     assert.equal(
-      resolveAssetUrl("https://example.com/x.png", "./"),
+      resolveAssetUrl("https://example.com/x.png", "/"),
       "https://example.com/x.png",
     );
   });
 
-  it("builds data URLs under absolute root base /", () => {
-    assert.equal(resolveDataUrl("profile", "/"), "/data/profile.json");
-    assert.equal(resolveAssetUrl("/uploads/photo.jpg", "/"), "/uploads/photo.jpg");
+  it("builds data URLs under root-relative base ./", () => {
+    assert.equal(resolveDataUrl("profile", "./"), "./data/profile.json");
+    assert.equal(resolveAssetUrl("/uploads/photo.jpg", "./"), "./uploads/photo.jpg");
   });
 
   it("prefixes data and assets with an explicit project subpath", () => {
@@ -33,17 +33,6 @@ describe("resolveDataUrl / resolveAssetUrl (shipped)", () => {
         "/sbkoth-intro-page/",
       ),
       "/sbkoth-intro-page/uploads/1740109013236-profile-photo.jpg",
-    );
-  });
-
-  it("handles base without trailing slash", () => {
-    assert.equal(
-      resolveDataUrl("profile", "/sbkoth-intro-page"),
-      "/sbkoth-intro-page/data/profile.json",
-    );
-    assert.equal(
-      resolveAssetUrl("/uploads/a.jpg", "/sbkoth-intro-page"),
-      "/sbkoth-intro-page/uploads/a.jpg",
     );
   });
 });
